@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-	<link rel="stylesheet" href="Style.css">
+	<link rel="stylesheet" href="{% static 'css/Style.css' %}">
 	<title>SelfStorage</title>
 </head>
 <body>
@@ -15,8 +16,8 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<a class="navbar-brand" href="#">
-			<img src="img/Vector.svg" alt="[]">
-			<img src="img/SelfStorage.svg" alt="SelfStorage">
+			<img src="{% static 'img/Vector.svg' %}" alt="[]">
+			<img src="{% static 'img/SelfStorage.svg' %}" alt="SelfStorage">
 		</a>
 		<div class="collapse navbar-collapse justify-content-end" id="navbar">
 			<ul class="navbar-nav">
@@ -44,6 +45,7 @@
 		</div>
 	</nav>
 </header>
+
 <aside class="modal fade" id="RegModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
 		<div class="modal-content">
@@ -64,6 +66,7 @@
 		</div>
 	</div>
 </aside>
+
 <aside class="modal fade" id="SignModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
 		<div class="modal-content">
@@ -83,6 +86,7 @@
 		</div>
 	</div>
 </aside>
+
 <aside class="modal fade" id="ForgetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
 		<div class="modal-content">
@@ -104,8 +108,8 @@
 	<article class="row">
 		<div class="col-12 col-lg-6 mb-3 mb-lg-0">
 			<h1 class="fw-bold SelfStorage_green mb-5">Доставка и бережное хранение ваших вещей</h1>
-			<h4 class="fw-lighter SelfStorage_grey mb-5">Аренда бокса на любой срок Бесплатная доставка от вашего дома </h4>
-			<form class="">
+			<h4 class="fw-lighter SelfStorage_grey mb-5">Аренда бокса на любой срок Бесплатная доставка от вашего дома</h4>
+			<form>
 				<input type="text" required name="EMAIL1" class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey" placeholder="Укажите ваш e-mail">
 				<button class="btn border-8 py-3 px-5 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange">Рассчитать стоимость</button>
 				<span class="text-center fw-light">Нажимая на кнопку, вы подтверждаете свое <a href="#" class="link-dark">согласие на обработку персональных данных</a></span>
@@ -115,7 +119,7 @@
 	</article>
 
 	<article class="text-center row pt-header">
-		<h1 class=" fw-bold SelfStorage_green mb-5">Чем мы можем помочь?</h1>
+		<h1 class="fw-bold SelfStorage_green mb-5">Чем мы можем помочь?</h1>
 		<div class="col-12 col-sm-4 mb-4 mb-sm-0">
 			<svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" fill="#579586" class="bi bi-alarm" viewBox="0 0 16 16">
 				<path d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5z"/>
@@ -136,10 +140,10 @@
 				<path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z"/>
 			</svg>
 			<h4 class="fw-bold mt-4 mb-3 SelfStorage__bg_black">Дополнительный заработок</h4>
-			<h6>Использование небольших секций для  приобретенных  помещений</h6>
+			<h6>Использование небольших секций для приобретённых помещений</h6>
 		</div>
 	</article>
-
+	
 	<article class="row pt-header">
 		<h1 class="text-center fw-bold SelfStorage_green mb-4">Чем мы можем помочь?</h1>
 		<div class="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end mb-3 mb-lg-0">
@@ -152,7 +156,6 @@
 					<span class="text-white">Дачные вещи</span><br>
 					<span class="text-white">Другие идеи хранения</span>
 				</div>
-
 				<h4 class="text-white mt-5 mb-3">Бокс от 190 р. за м²</h4>
 				<button class="btn fs_24 SelfStorage_green bg-white SelfStorage__btn_green border-8 w-50 py-3">Подробнее</button>
 			</div>
@@ -179,7 +182,7 @@
 			<iframe class="w-100" height="700" src="https://www.youtube.com/embed/NsSC4pQ6HJE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 		</div>
 	</article>
-
+	
 	<article class="text-center row pt-header">
 		<h1 class="fw-bold SelfStorage_green mb-4">Удобная и доступная аренда боксов</h1>
 		<div class="col-12 col-sm-4 d-flex flex-column mb-4 mb-sm-0">
@@ -193,6 +196,7 @@
 			<h4 class="fw-bold mt-4 mb-3 SelfStorage__bg_black">Не нужно измерять</h4>
 			<h6>Доставщик замерит габариты ваших вещей на месте</h6>
 		</div>
+
 		<div class="col-12 col-sm-4 d-flex flex-column mb-4 mb-sm-0">
 			<div class="align-self-center d-flex justify-content-center align-items-center SelfStorage__bg_green rounded-pill" style="width: 84px; height: 84px;">
 				<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#fff" class="bi bi-percent rounded-pill" viewBox="0 0 16 16" style="border: 3px solid white">
@@ -202,6 +206,7 @@
 			<h4 class="fw-bold mt-4 mb-3 SelfStorage__bg_black">Бесплатная доставка</h4>
 			<h6>Доставим ваши вещи от дома до ближайшего склада</h6>
 		</div>
+
 		<div class="col-12 col-sm-4 d-flex flex-column mb-4 mb-sm-0">
 			<div class="align-self-center d-flex justify-content-center align-items-center SelfStorage__bg_green rounded-pill" style="width: 84px; height: 84px;">
 				<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#fff" class="bi bi-calendar-plus" viewBox="0 0 16 16">
@@ -218,7 +223,7 @@
 		<div class="col-12 col-lg-6 mb-3 mb-lg-0 SelfStorage__img2"></div>
 		<div class="col-12 col-lg-6 d-flex flex-column align-items-center align-items-lg-start">
 			<h1 class="text-start fw-bold SelfStorage_green mb-4">Всегда рядом</h1>
-			<h4 class="SelfStorage_grey">Одинцово,  ул. Северная, д. 36</h4>
+			<h4 class="SelfStorage_grey">Одинцово, ул. Северная, д. 36</h4>
 			<div class="row">
 				<div class="col-6 d-flex flex-column align-items-center align-items-lg-start">
 					<span class="fs_30 fw-bold SelfStorage_orange">18 °С</span>
@@ -240,6 +245,7 @@
 			</div>
 		</div>
 	</article>
+
 	<article class="row pt-header">
 		<h1 class="text-center fw-bold SelfStorage_green mb-4">Забота о ваших ценностях – наша главная задача</h1>
 		<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
@@ -256,7 +262,7 @@
 							</div>
 						</div>
 						<div class="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center">
-							<img src="img/img1.png" width="290" height="290" class="rounded-pill mb-3" alt="">
+							<img src="{% static 'img/img1.png' %}" width="290" height="290" class="rounded-pill mb-3" alt="">
 							<span class="fw-bold">Катерина Петрова</span>
 							<span>Одинцово</span>
 						</div>
@@ -274,7 +280,7 @@
 							</div>
 						</div>
 						<div class="col-12 col-lg-6 d-flex flex-column align-items-center justify-content-center">
-							<img src="img/img2.png" width="290" height="290"  class="rounded-pill mb-3" alt="">
+							<img src="{% static 'img/img2.png' %}" width="290" height="290" class="rounded-pill mb-3" alt="">
 							<span class="fw-bold">Николай Овсянников</span>
 							<span>Люберцы</span>
 						</div>
@@ -296,9 +302,11 @@
 			</div>
 		</div>
 	</article>
+
 </main>
+
 <aside class="py-5 mt-header SelfStorage__bg_green">
-	<div class="container py-5Арендовать бокс">
+	<div class="container py-5">
 		<div class="d-flex flex-column align-items-center">
 			<h1 class="text-white text-center fw-bold mb-4">Арендуйте свой первый бокс прямо сейчас и получите скидку 15% до конца апреля</h1>
 			<h4 class="text-white text-center fw-light">Акция распространяется только на новых пользователей сервиса SelfStorage</h4>
@@ -314,29 +322,29 @@
 		</div>
 	</div>
 </aside>
+
 <footer class="container py-5">
 	<div class="row mb-5">
 		<div class="col-6 col-md-4 d-flex flex-column mb-3">
 			<a href="#" class="navbar-brand">
-				<img src="img/Vector.svg" alt="[]">
-				<img src="img/SelfStorage.svg" alt="SelfStorage">
+				<img src="{% static 'img/Vector.svg' %}" alt="[]">
+				<img src="{% static 'img/SelfStorage.svg' %}" alt="SelfStorage">
 			</a>
 			<span class="SelfStorage_green">Ежедневно: 9.00 - 21.00</span>
-
 		</div>
 		<div class="col-6 col-md-4 d-flex flex-column mb-3">
 			<span class="fs_24 fw-bold SelfStorage_green">8 (800) 000-00-00</span>
 			<span class="SelfStorage_green">info@selfstorage.ru</span>
 		</div>
 		<div class="col-6 col-md-4">
-			<div class="">
-				<a href="https://vk.com/devmanorg"><img src="img/VK_Compact_Logo%201.svg" alt=""></a>
+			<div>
+				<a href="https://vk.com/devmanorg"><img src="{% static 'img/VK_Compact_Logo 1.svg' %}" alt=""></a>
 				<a href="#" class="text-decoration-none">
 					<svg xmlns="http://www.w3.org/2000/svg" width="53" height="53" fill="currentColor" class="bi bi-telegram" viewBox="0 0 16 16">
 						<path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z"/>
 					</svg>
 				</a>
-				<a href="#"><img src="img/whatsapp.svg" alt=""></a>
+				<a href="#"><img src="{% static 'img/whatsapp.svg' %}" alt=""></a>
 			</div>
 		</div>
 	</div>
@@ -359,6 +367,7 @@
 		<h6 class="SelfStorage_grey text-center mt-5">© 2022 SelfStorage. Использование материалов запрещено без письменного согласия</h6>
 	</div>
 </footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

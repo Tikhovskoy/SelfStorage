@@ -13,7 +13,15 @@ def faq(request):
 
 
 def my_rent(request):
-    has_rent = False
+    # has_rent = False
+    #
+    # template_name = 'my-rent.html' if has_rent else 'my-rent-empty.html'
+    # return render(request, template_name, {})
+    return render(request, 'my-rent.html', {})
 
-    template_name = 'my_rent.html' if has_rent else 'my_rent_empty.html'
-    return render(request, template_name)
+
+def my_rent_empty(requests):
+    return render(requests, 'my-rent-empty.html', {})
+
+def boxes(requests):
+    return  render(requests, 'boxes.html', {})

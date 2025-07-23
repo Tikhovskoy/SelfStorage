@@ -1,6 +1,8 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from apps.orders.models import Client
+
 
 class Warehouse(models.Model):
 	ADVANTAGE_CHOICE = {
@@ -48,6 +50,9 @@ class Box(models.Model):
 		verbose_name='Склад',
 	)
 	floor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Этаж')
+	length = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Длина')
+	width = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Ширина')
+	height = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Высота')
 	square = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Площадь')
 	price = models.DecimalField(
 		max_digits=10,
@@ -59,6 +64,19 @@ class Box(models.Model):
 		null=True,
 		blank=True,
 		verbose_name='Бокс свободен',
+	)
+	tenant = models.ForeignKey(
+		Client,
+		on_delete=models.SET_NULL,
+		null=True,
+		blank=True,
+		related_name='rent_boxes',
+		verbose_name='Арендатор',
+	)
+	paid_for = models.DateField(
+		null=True,
+		blank=True,
+		verbose_name='Оплачен до',
 	)
 
 	class Meta:

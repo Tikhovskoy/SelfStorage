@@ -34,6 +34,11 @@ class Warehouse(models.Model):
 		verbose_name='Преимущество склада',
 	)
 
+	is_default_nearest = models.BooleanField(
+		default=False,
+		verbose_name='Ближайший склад по умолчанию'
+	)
+
 	class Meta:
 		verbose_name = 'Склад'
 		verbose_name_plural = 'Склады'

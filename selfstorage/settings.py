@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "apps.storage_units",
     "apps.promo",
     "apps.business",
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [

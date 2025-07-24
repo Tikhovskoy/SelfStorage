@@ -61,5 +61,13 @@ def my_rent(request):
 def my_rent_empty(requests):
     return render(requests, 'my-rent-empty.html', {})
 
+
 def boxes(requests):
     return  render(requests, 'boxes.html', {})
+
+
+def tariffs_view(requests):
+    return render(requests, 'tariffs.html', {'title' : 'Тарифы'})
+
+def calculate_cost_view(requests):
+    return render(requests, 'calculate_cost', {'title': 'Рассчитать стоимость'})

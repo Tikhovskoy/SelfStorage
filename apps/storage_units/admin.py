@@ -10,5 +10,5 @@ class WarehouseAdmin(admin.ModelAdmin):
 
 @admin.register(Box)
 class BoxAdmin(admin.ModelAdmin):
-	list_display = ['warehouse', 'floor', 'square', 'height', 'price', 'is_free']
+	list_display = ['id', 'warehouse', 'floor', 'square', 'height', 'price', 'is_free']
 	list_filter = ['warehouse', 'square', 'height', 'is_free']

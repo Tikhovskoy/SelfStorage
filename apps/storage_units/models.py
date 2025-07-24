@@ -14,6 +14,11 @@ class Warehouse(models.Model):
 
 	name = models.CharField(max_length=100, verbose_name='Название склада')
 	address = models.TextField(verbose_name='Адрес')
+	image = models.ImageField(
+		null=True,
+		blank=True,
+		verbose_name='Фото склада',
+	)
 	temperature = models.DecimalField(
 		max_digits=3,
 		decimal_places=1,
@@ -57,8 +62,18 @@ class Box(models.Model):
 	floor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Этаж')
 	length = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Длина')
 	width = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Ширина')
-	height = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Высота')
-	square = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)], verbose_name='Площадь')
+	height = models.DecimalField(
+		max_digits=3,
+		decimal_places=1,
+		validators=[MinValueValidator(1)],
+		verbose_name='Высота',
+	)
+	square = models.PositiveSmallIntegerField(
+		null=True,
+		blank=True,
+		validators=[MinValueValidator(1)],
+		verbose_name='Площадь',
+	)
 	price = models.DecimalField(
 		max_digits=10,
 		decimal_places=2,
@@ -83,6 +98,10 @@ class Box(models.Model):
 		blank=True,
 		verbose_name='Оплачен до',
 	)
+
+	def save(self, *args, **kwargs):
+		self.square = self.length * self.width
+		super().save(*args, **kwargs)
 
 	class Meta:
 		verbose_name = 'Бокс'

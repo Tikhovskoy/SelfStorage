@@ -1,9 +1,21 @@
 from django.db import models
+from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Client(models.Model):
-	first_name = models.CharField(max_length=100, verbose_name='Имя')
+	user = models.OneToOneField(
+		User,
+		on_delete=models.CASCADE,
+		related_name='client_profile',
+		null=True,
+		blank=True,
+		verbose_name='Пользователь',
+	)
+	first_name = models.CharField(
+		max_length=100,
+		verbose_name='Имя',
+	)
 	last_name = models.CharField(
 		max_length=100,
 		null=True,
@@ -27,7 +39,10 @@ class Client(models.Model):
 		blank=True,
 		verbose_name='Телефон',
 	)
-	registered_at = models.DateField(auto_now=True, verbose_name='Дата регистрации')
+	registered_at = models.DateField(
+		auto_now=True,
+		verbose_name='Дата регистрации',
+	)
 
 	class Meta:
 		verbose_name = 'Клиента'
@@ -36,5 +51,4 @@ class Client(models.Model):
 	def __str__(self):
 		if self.last_name:
 			return f'{self.first_name} {self.last_name}'
-		else:
-			return f'{self.first_name}'
+		return self.first_name

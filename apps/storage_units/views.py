@@ -1,5 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Warehouse, Box
+from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm
+from apps.orders.models import Client
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     try:
@@ -9,6 +12,7 @@ def index(request):
     except Warehouse.MultipleObjectsReturned:
         nearest_warehouse = Warehouse.objects.filter(is_default_nearest=True).first()
 
+    warehouse_data = {}
     if nearest_warehouse:
         total_boxes = nearest_warehouse.boxes.count()
         free_boxes = nearest_warehouse.boxes.filter(is_free=True).count()
@@ -22,7 +26,6 @@ def index(request):
             if any_box:
                 box_price = any_box.price
 
-
         display_monthly_cost = f"{box_price} ₽" if box_price is not None else 'Цену уточняйте'
 
         warehouse_data = {
@@ -35,9 +38,11 @@ def index(request):
             'free_boxes': free_boxes,
         }
 
-        context = {
-            'warehouse': warehouse_data
-        }
+    context = {
+        'warehouse': warehouse_data,
+        'registration_form': RegistrationForm(),
+        'login_form': LoginForm(),
+    }
 
     return render(request, 'index.html', context)
 
@@ -50,12 +55,31 @@ def faq(request):
     return render(request, 'faq.html')
 
 
+@login_required
 def my_rent(request):
-    # has_rent = False
-    #
-    # template_name = 'my-rent.html' if has_rent else 'my-rent-empty.html'
-    # return render(request, template_name, {})
-    return render(request, 'my-rent.html', {})
+    client = get_object_or_404(Client, user=request.user)
+    user = request.user
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=client)
+        if form.is_valid():
+            form.save()
+
+            new_email = form.cleaned_data.get('email')
+            if new_email and new_email != user.email:
+                user.email = new_email
+                user.username = new_email
+                user.save()
+
+    else:
+        form = ProfileForm(instance=client)
+
+    context = {
+        'client': client,
+        'form': form,
+    }
+
+    return render(request, 'my-rent.html', context)
 
 
 def my_rent_empty(requests):

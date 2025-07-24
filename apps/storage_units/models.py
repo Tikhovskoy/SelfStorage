@@ -109,3 +109,30 @@ class Box(models.Model):
 
 	def __str__(self):
 		return f'№ бокса {self.id}'
+
+
+class Tariff(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Название тарифа")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена в месяц (руб.)")
+    min_square_meters = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1)],
+        verbose_name="Минимальная площадь бокса (м²)"
+    )
+    max_square_meters = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1)],
+        blank=True,
+        null=True,
+        verbose_name="Максимальная площадь бокса (м²)"
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name="Подробное описание тарифа"
+    )
+
+    class Meta:
+        verbose_name = "Тариф"
+        verbose_name_plural = "Тарифы"
+        ordering = ['min_square_meters', 'price']
+
+    def __str__(self):
+        return f"{self.name} - {self.price} ₽/мес ({self.min_square_meters}-{self.max_square_meters if self.max_square_meters else '∞'} м²)"

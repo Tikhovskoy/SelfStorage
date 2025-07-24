@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Warehouse, Box
+from .models import Warehouse, Box, Tariff
 from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm
 from apps.orders.models import Client
 from django.contrib.auth.decorators import login_required
@@ -91,7 +91,11 @@ def boxes(requests):
 
 
 def tariffs_view(requests):
-    return render(requests, 'tariffs.html', {'title' : 'Тарифы'})
+    tariffs = Tariff.objects.all().order_by('min_square_meters')
+    context = {
+        'tariffs': tariffs
+    }
+    return render(requests, 'tariffs.html', context)
 
 def calculate_cost_view(requests):
     return render(requests, 'calculate_cost', {'title': 'Рассчитать стоимость'})

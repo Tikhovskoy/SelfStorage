@@ -1,20 +1,44 @@
 from django.shortcuts import render
+from .models import Warehouse, Box
 
 def index(request):
-    nearest_warehouse = {
-        'name': 'Склад SelfStorage на Пушкина',
-        'address': 'г. Москва, ул. Пушкина, 37',
-        'temperature': '18 °С',
-        'free_boxes': '24 из 258',
-        'ceiling_height': 'до 3.5 м',
-        'monthly_cost': '2264 ₽',
-        'has_delivery': True,
-    }
+    try:
+        nearest_warehouse = Warehouse.objects.get(is_default_nearest=True)
+    except Warehouse.DoesNotExist:
+        nearest_warehouse = Warehouse.objects.first()
+    except Warehouse.MultipleObjectsReturned:
+        nearest_warehouse = Warehouse.objects.filter(is_default_nearest=True).first()
 
-    context = {
-        'title': 'SelfStorage – Удобное и бережное хранение ваших вещей',
-        'warehouse': nearest_warehouse,
-    }
+    if nearest_warehouse:
+        total_boxes = nearest_warehouse.boxes.count()
+        free_boxes = nearest_warehouse.boxes.filter(is_free=True).count()
+
+        box_price = None
+        first_free_box = nearest_warehouse.boxes.filter(is_free=True).first()
+        if first_free_box:
+            box_price = first_free_box.price
+        else:
+            any_box = nearest_warehouse.boxes.first()
+            if any_box:
+                box_price = any_box.price
+
+
+        display_monthly_cost = f"{box_price} ₽" if box_price is not None else 'Цену уточняйте'
+
+        warehouse_data = {
+            'name': nearest_warehouse.name,
+            'address': nearest_warehouse.address,
+            'temperature': f"{nearest_warehouse.temperature} °С" if nearest_warehouse.temperature is not None else 'Неизвестно',
+            'ceiling_height': f"до {nearest_warehouse.ceilings} м",
+            'monthly_cost': display_monthly_cost,
+            'total_boxes': total_boxes,
+            'free_boxes': free_boxes,
+        }
+
+        context = {
+            'warehouse': warehouse_data
+        }
+
     return render(request, 'index.html', context)
 
 

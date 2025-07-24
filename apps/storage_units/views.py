@@ -1,7 +1,21 @@
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'index.html')
+    nearest_warehouse = {
+        'name': 'Склад SelfStorage на Пушкина',
+        'address': 'г. Москва, ул. Пушкина, 37',
+        'temperature': '18 °С',
+        'free_boxes': '24 из 258',
+        'ceiling_height': 'до 3.5 м',
+        'monthly_cost': '2264 ₽',
+        'has_delivery': True,
+    }
+
+    context = {
+        'title': 'SelfStorage – Удобное и бережное хранение ваших вещей',
+        'warehouse': nearest_warehouse,
+    }
+    return render(request, 'index.html', context)
 
 
 def boxes_list(request):

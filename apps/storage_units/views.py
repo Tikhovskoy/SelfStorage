@@ -1,8 +1,13 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Warehouse, Box
-from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm
+from .models import Warehouse, Box, Tariff
+from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm, SimplePasswordResetForm
 from apps.orders.models import Client
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+import json
+from apps.storage_units.models import Box
+
 
 def index(request):
     try:
@@ -38,10 +43,24 @@ def index(request):
             'free_boxes': free_boxes,
         }
 
+    form_data = request.session.pop('reset_form_data', None)
+    form_errors_json = request.session.pop('reset_form_errors', None)
+
+    if form_data:
+        reset_form = SimplePasswordResetForm(form_data)
+        if form_errors_json:
+            form_errors = json.loads(form_errors_json)
+            for field, errors in form_errors.items():
+                for error in errors:
+                    reset_form.add_error(field, error.get('message'))
+    else:
+        reset_form = SimplePasswordResetForm()
+
     context = {
         'warehouse': warehouse_data,
         'registration_form': RegistrationForm(),
         'login_form': LoginForm(),
+        'reset_form': reset_form,
     }
 
     return render(request, 'index.html', context)
@@ -71,12 +90,31 @@ def my_rent(request):
                 user.username = new_email
                 user.save()
 
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+
+            if old_password or new_password or confirm_password:
+                if not user.check_password(old_password):
+                    messages.error(request, 'Старый пароль введён неверно.')
+                elif new_password != confirm_password:
+                    messages.error(request, 'Новый пароль и подтверждение не совпадают.')
+                elif not new_password:
+                    messages.error(request, 'Новый пароль не может быть пустым.')
+                else:
+                    user.set_password(new_password)
+                    user.save()
+                    update_session_auth_hash(request, user)
+                    messages.success(request, 'Пароль успешно обновлён.')
     else:
         form = ProfileForm(instance=client)
+
+    boxes = Box.objects.filter(tenant=client)
 
     context = {
         'client': client,
         'form': form,
+        'boxes': boxes,
     }
 
     return render(request, 'my-rent.html', context)
@@ -91,7 +129,11 @@ def boxes(requests):
 
 
 def tariffs_view(requests):
-    return render(requests, 'tariffs.html', {'title' : 'Тарифы'})
+    tariffs = Tariff.objects.all().order_by('min_square_meters')
+    context = {
+        'tariffs': tariffs
+    }
+    return render(requests, 'tariffs.html', context)
 
 def calculate_cost_view(requests):
     return render(requests, 'calculate_cost', {'title': 'Рассчитать стоимость'})

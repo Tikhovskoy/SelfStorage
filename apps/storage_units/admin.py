@@ -12,4 +12,3 @@ class WarehouseAdmin(admin.ModelAdmin):
 class BoxAdmin(admin.ModelAdmin):
 	list_display = ['id', 'warehouse', 'floor', 'square', 'height', 'price', 'is_free']
 	list_filter = ['warehouse', 'square', 'height', 'is_free']
-	search_fields = ['id']

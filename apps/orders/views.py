@@ -1,6 +1,8 @@
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
 from apps.orders.forms import RegistrationForm, LoginForm
+from django.contrib import messages
+from .forms import SimplePasswordResetForm
 
 
 def register_view(request):
@@ -40,4 +42,16 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('index')
+    messages.success(request, 'Вы успешно вышли из аккаунта.')
+    return redirect('storage_units:index')
+
+def simple_password_reset_view(request):
+    if request.method == 'POST':
+        form = SimplePasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Пароль успешно обновлён.')
+        else:
+            request.session['reset_form_errors'] = form.errors.as_json()
+            request.session['reset_form_data'] = request.POST
+        return redirect('storage_units:index')

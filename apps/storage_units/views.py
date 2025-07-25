@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 import json
+from apps.storage_units.models import Box
 
 
 def index(request):
@@ -105,13 +106,15 @@ def my_rent(request):
                     user.save()
                     update_session_auth_hash(request, user)
                     messages.success(request, 'Пароль успешно обновлён.')
-
     else:
         form = ProfileForm(instance=client)
+
+    boxes = Box.objects.filter(tenant=client)
 
     context = {
         'client': client,
         'form': form,
+        'boxes': boxes,
     }
 
     return render(request, 'my-rent.html', context)

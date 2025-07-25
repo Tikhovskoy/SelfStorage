@@ -13,6 +13,15 @@
 </head>
 
 <body>
+	{% if messages %}
+	<div class="container mt-3">
+		{% for message in messages %}
+		<div class="SelfStorage__bg_green text-white text-center fs_24 rounded-3 p-3 mb-3">
+			{{ message }}
+		</div>
+		{% endfor %}
+	</div>
+	{% endif %}
 	<header class="navbar navbar-expand-xl navbar-light fixed-top bg-white py-5">
 		<nav class="container">
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"

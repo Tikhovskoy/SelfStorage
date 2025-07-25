@@ -3,6 +3,9 @@ from .models import Warehouse, Box, Tariff
 from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm
 from apps.orders.models import Client
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+
 
 def index(request):
     try:
@@ -70,6 +73,23 @@ def my_rent(request):
                 user.email = new_email
                 user.username = new_email
                 user.save()
+
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+
+            if old_password or new_password or confirm_password:
+                if not user.check_password(old_password):
+                    messages.error(request, 'Старый пароль введён неверно.')
+                elif new_password != confirm_password:
+                    messages.error(request, 'Новый пароль и подтверждение не совпадают.')
+                elif not new_password:
+                    messages.error(request, 'Новый пароль не может быть пустым.')
+                else:
+                    user.set_password(new_password)
+                    user.save()
+                    update_session_auth_hash(request, user)
+                    messages.success(request, 'Пароль успешно обновлён.')
 
     else:
         form = ProfileForm(instance=client)

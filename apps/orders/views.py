@@ -1,6 +1,7 @@
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
 from apps.orders.forms import RegistrationForm, LoginForm
+from django.contrib import messages
 
 
 def register_view(request):
@@ -40,4 +41,5 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('index')
+    messages.success(request, 'Вы успешно вышли из аккаунта.')
+    return redirect('storage_units:index')

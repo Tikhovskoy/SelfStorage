@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Warehouse, Box, Tariff
-from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm
+from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm, SimplePasswordResetForm
 from apps.orders.models import Client
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+import json
 
 
 def index(request):
@@ -41,10 +42,24 @@ def index(request):
             'free_boxes': free_boxes,
         }
 
+    form_data = request.session.pop('reset_form_data', None)
+    form_errors_json = request.session.pop('reset_form_errors', None)
+
+    if form_data:
+        reset_form = SimplePasswordResetForm(form_data)
+        if form_errors_json:
+            form_errors = json.loads(form_errors_json)
+            for field, errors in form_errors.items():
+                for error in errors:
+                    reset_form.add_error(field, error.get('message'))
+    else:
+        reset_form = SimplePasswordResetForm()
+
     context = {
         'warehouse': warehouse_data,
         'registration_form': RegistrationForm(),
         'login_form': LoginForm(),
+        'reset_form': reset_form,
     }
 
     return render(request, 'index.html', context)

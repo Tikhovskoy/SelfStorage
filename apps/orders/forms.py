@@ -64,3 +64,29 @@ class ProfileForm(forms.ModelForm):
                 'id': 'IMAGE',
             }),
         }
+
+class SimplePasswordResetForm(forms.Form):
+    email = forms.EmailField(label='E-mail', max_length=254)
+    new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput)
+    confirm_password = forms.CharField(label='Подтверждение пароля', widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("new_password")
+        password2 = cleaned_data.get("confirm_password")
+
+        if password1 != password2:
+            self.add_error("confirm_password", "Пароли не совпадают")
+
+        email = cleaned_data.get("email")
+        if not User.objects.filter(username=email).exists():
+            self.add_error("email", "Пользователь с таким email не найден")
+
+        return cleaned_data
+
+    def save(self):
+        email = self.cleaned_data['email']
+        user = User.objects.get(username=email)
+        user.set_password(self.cleaned_data['new_password'])
+        user.save()
+        return user

@@ -9,7 +9,7 @@ class Warehouse(models.Model):
 		('metro', 'Рядом с метро'),
 		('parking', 'Парковка'),
 		('ceilings', 'Высокие потолки'),
-		('box', 'Большие боксы')
+		('box', 'Большие боксы'),
 	}
 
 	name = models.CharField(max_length=100, verbose_name='Название склада')

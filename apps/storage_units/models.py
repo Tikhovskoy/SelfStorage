@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Min, Q
 
 from apps.orders.models import Client
 
@@ -50,6 +51,25 @@ class Warehouse(models.Model):
 
 	def __str__(self):
 		return f'Склад {self.name}'
+
+	@property
+	def min_tariff_price(self):
+		smallest_box_square = self.boxes.aggregate(Min('square'))['square__min']
+
+		if smallest_box_square is None:
+			return None
+
+		applicable_tariffs = Tariff.objects.filter(
+			min_square_meters__lte=smallest_box_square
+		).filter(
+			Q(max_square_meters__isnull=True) | Q(max_square_meters__gte=smallest_box_square)
+		).order_by('price')
+
+		if applicable_tariffs.exists():
+			cheapest_tariff_price = applicable_tariffs.first().price
+			return cheapest_tariff_price
+		else:
+			return None
 
 
 class Box(models.Model):

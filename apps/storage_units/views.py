@@ -163,3 +163,20 @@ def renew_box(request, box_id):
         box.save()
 
     return redirect('storage_units:my_rent')
+
+
+@require_POST
+@login_required
+def rent_box(request, box_id):
+    box = get_object_or_404(Box, id=box_id)
+    client = Client.objects.get(user=request.user)
+
+    if box.tenant is None:
+        rent_until = request.POST.get('rent_until')
+        if rent_until:
+            box.tenant = client
+            box.paid_for = rent_until
+            box.is_free = False
+            box.save()
+
+    return redirect('storage_units:my_rent')

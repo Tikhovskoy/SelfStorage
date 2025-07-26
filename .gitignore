@@ -10,3 +10,6 @@ venv/
 .idea/
 .vscode/
 reference
+**/migrations/*.py
+**/migrations/*.pyc
+!**/migrations/__init__.py

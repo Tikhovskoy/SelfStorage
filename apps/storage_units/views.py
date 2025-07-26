@@ -1,3 +1,4 @@
+from django.db.models import Count, Q
 from django.shortcuts import render, get_object_or_404
 from .models import Warehouse, Box, Tariff
 from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm, SimplePasswordResetForm
@@ -120,20 +121,30 @@ def my_rent(request):
     return render(request, 'my-rent.html', context)
 
 
-def my_rent_empty(requests):
-    return render(requests, 'my-rent-empty.html', {})
+def my_rent_empty(request):
+    return render(request, 'my-rent-empty.html', {})
 
 
-def boxes(requests):
-    return  render(requests, 'boxes.html', {})
-
-
-def tariffs_view(requests):
+def tariffs_view(request):
     tariffs = Tariff.objects.all().order_by('min_square_meters')
     context = {
         'tariffs': tariffs
     }
-    return render(requests, 'tariffs.html', context)
+    return render(request, 'tariffs.html', context)
 
-def calculate_cost_view(requests):
-    return render(requests, 'calculate_cost', {'title': 'Рассчитать стоимость'})
+
+def calculate_cost_view(request):
+    return render(request, 'calculate_cost', {'title': 'Рассчитать стоимость'})
+
+
+def boxes_list_view(request):
+    warehouses = Warehouse.objects.annotate(
+        total_boxes_count=Count('boxes'),
+        free_boxes_count=Count('boxes', filter=Q(boxes__is_free=True))
+    )
+
+    context = {
+        'title': 'Наши боксы',  # Заголовок страницы
+        'warehouses': warehouses,  # Список объектов Warehouse с аннотациями
+    }
+    return render(request, 'boxes.html', context)

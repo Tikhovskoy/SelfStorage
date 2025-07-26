@@ -46,7 +46,8 @@
 						<a class="nav-link SelfStorage_black" href="{% url 'storage_units:faq' %}">Правила хранения</a>
 					</li>
 					<li class="nav-item me-5">
-						<a class="nav-link SelfStorage_black" href="{% url 'storage_units:boxes_list' %}">Арендовать бокс</a>
+						<a class="nav-link SelfStorage_black" href="{% url 'storage_units:boxes_list' %}">Арендовать
+							бокс</a>
 					</li>
 
 					{% if request.user.is_authenticated %}
@@ -200,39 +201,42 @@
 							<h4>{{ box.square }} м²</h4>
 
 							{% if box.paid_for %}
-								<h4 class="SelfStorage_green">Оплачен до</h4>
-								<h4>{{ box.paid_for|date:"d.m.Y" }}</h4>
+							<h4 class="SelfStorage_green">Оплачен до</h4>
+							<h4>{{ box.paid_for|date:"d.m.Y" }}</h4>
 							{% else %}
-								<span class="text-danger">Не оплачен</span>
+							<span class="text-danger">Не оплачен</span>
 							{% endif %}
 
 							<div>
 								<button
 									class="btn fs_24 px-5 py-3 text-white border-8 SelfStorage__bg_green SelfStorage__btn2_green mb-3"
-									data-bs-toggle="modal"
-									data-bs-target="#RentalModal{{ box.id }}">
+									data-bs-toggle="modal" data-bs-target="#RentalModal{{ box.id }}">
 									Продлить аренду
 								</button>
 								<div class="modal fade" id="RentalModal{{ box.id }}" tabindex="-1">
 									<div class="modal-dialog modal-dialog-centered">
-									  <div class="modal-content">
-										<div class="modal-header justify-content-center">
-										  <h5 class="modal-title"><strong>Продление аренды</strong></h5>
-										</div>
-										<div class="modal-body text-center p-4">
-										  <p class="mb-2 fs-5"><strong>Склад: {{ box.warehouse.name }}</strong></p>
-										  <p class="mb-2 fs-5"><strong>Бокс №{{ box.id }}</strong></p>
-
-										  <form method="post" action="{% url 'storage_units:renew_box' box.id %}">
-											{% csrf_token %}
-											<div class="mb-3">
-											  <label for="renew-date-{{ box.id }}" class="form-label fw-semibold">Продлить до:</label>
-											  <input type="date" class="form-control text-center" name="renew_date" id="renew-date-{{ box.id }}" required>
+										<div class="modal-content">
+											<div class="modal-header justify-content-center">
+												<h5 class="modal-title"><strong>Продление аренды</strong></h5>
 											</div>
-											<button type="submit" class="btn btn-success px-4">Подтвердить</button>
-										  </form>
+											<div class="modal-body text-center p-4">
+												<p class="mb-2 fs-5"><strong>Склад: {{ box.warehouse.name }}</strong>
+												</p>
+												<p class="mb-2 fs-5"><strong>Бокс №{{ box.id }}</strong></p>
+
+												<form method="post" action="{% url 'storage_units:renew_box' box.id %}">
+													{% csrf_token %}
+													<div class="mb-3">
+														<label for="renew-date-{{ box.id }}"
+															class="form-label fw-semibold">Продлить до:</label>
+														<input type="date" class="form-control text-center"
+															name="renew_date" id="renew-date-{{ box.id }}" required>
+													</div>
+													<button type="submit"
+														class="btn btn-success px-4">Подтвердить</button>
+												</form>
+											</div>
 										</div>
-									  </div>
 									</div>
 								</div>
 							</div>
@@ -253,7 +257,7 @@
 							Но вы можете арендовать свой первый бокс по привлекательной цене прямо сейчас
 						</h4>
 						<div>
-							<a href="{% url 'storage_units:boxes' %}"
+							<a href="{% url 'storage_units:boxes_list' %}"
 								class="btn fs_24 px-5 py-3 text-white SelfStorage__bg_orange SelfStorage__btn2_orange mb-3">
 								Арендовать бокс
 							</a>

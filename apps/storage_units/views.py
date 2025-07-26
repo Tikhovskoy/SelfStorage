@@ -1,5 +1,7 @@
 from django.db.models import Count, Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
+from django.views.decorators.http import require_POST
+
 from .models import Warehouse, Box, Tariff
 from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm, SimplePasswordResetForm
 from apps.orders.models import Client
@@ -148,3 +150,15 @@ def boxes_list_view(request):
         'warehouses': warehouses,  # Список объектов Warehouse с аннотациями
     }
     return render(request, 'boxes.html', context)
+
+
+@require_POST
+def renew_box(request, box_id):
+    box = get_object_or_404(Box, id=box_id)
+    renew_date = request.POST.get('renew_date')
+
+    if renew_date:
+        box.paid_for = renew_date
+        box.save()
+        
+    return redirect('storage_units:my_rent')

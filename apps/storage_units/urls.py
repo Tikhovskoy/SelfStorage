@@ -1,12 +1,12 @@
 from django.urls import path
-from .views import index, boxes_list, faq, my_rent, my_rent_empty, boxes, tariffs_view, calculate_cost_view
+from .views import index, boxes_list, faq, my_rent, my_rent_empty, tariffs_view, calculate_cost_view, boxes_list_view
 from apps.orders.views import register_view, login_view, logout_view, simple_password_reset_view
 
 app_name = 'storage_units'
 
 urlpatterns = [
     path('', index, name='index'),
-    path('boxes/', boxes_list, name='boxes'),
+    path('boxes/', boxes_list_view, name='boxes_list'),
     path('faq/', faq, name='faq'),
     path('my-rent/', my_rent, name='my_rent'),
     path('my-rent-empty/', my_rent_empty, name='my_rent_empty'),

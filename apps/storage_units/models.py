@@ -54,23 +54,12 @@ class Warehouse(models.Model):
 
 	@property
 	def min_tariff_price(self):
-		smallest_box_square = self.boxes.aggregate(Min('square'))['square__min']
+		min_price = self.boxes.aggregate(Min('price'))['price__min']
 
-		if smallest_box_square is None:
+		if min_price is None:
 			return None
 
-		applicable_tariffs = Tariff.objects.filter(
-			min_square_meters__lte=smallest_box_square
-		).filter(
-			Q(max_square_meters__isnull=True) | Q(max_square_meters__gte=smallest_box_square)
-		).order_by('price')
-
-		if applicable_tariffs.exists():
-			cheapest_tariff_price = applicable_tariffs.first().price
-			return cheapest_tariff_price
-		else:
-			return None
-
+		return min_price
 
 class Box(models.Model):
 	warehouse = models.ForeignKey(

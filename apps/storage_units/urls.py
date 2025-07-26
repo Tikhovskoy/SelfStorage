@@ -1,5 +1,15 @@
 from django.urls import path
-from .views import index, boxes_list, faq, my_rent, my_rent_empty, tariffs_view, calculate_cost_view, boxes_list_view
+from .views import (
+    index,
+    faq,
+    my_rent,
+    my_rent_empty,
+    rent_box,
+    tariffs_view,
+    calculate_cost_view,
+    boxes_list_view,
+    renew_box,
+)
 from apps.orders.views import register_view, login_view, logout_view, simple_password_reset_view
 
 app_name = 'storage_units'
@@ -16,4 +26,6 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('simple-reset/', simple_password_reset_view, name='simple_password_reset'),
+    path('my-rent/<int:box_id>/renew/', renew_box, name='renew_box'),
+    path('rent/<int:box_id>/', rent_box, name='rent_box'),
 ]

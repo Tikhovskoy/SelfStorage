@@ -35,10 +35,22 @@
         <li class="nav-item me-5">
           <a class="nav-link SelfStorage_black" href="{% url 'storage_units:boxes_list'%}">Арендовать бокс</a>
         </li>
-        <li class="nav-item me-5">
-          <a class="nav-link SelfStorage_green" href="#" data-bs-toggle="modal"
-             data-bs-target="#SignModal">Войти</a>
-        </li>
+		<li class="nav-item me-5">
+		  {% if user.is_authenticated %}
+			<a class="nav-link SelfStorage_green" href="{% url 'storage_units:my_rent' %}">
+			  Войти
+			</a>
+		  {% else %}
+			<a
+			  class="nav-link SelfStorage_green"
+			  href="#"
+			  data-bs-toggle="modal"
+			  data-bs-target="#SignModal"
+			>
+			  Войти
+			</a>
+		  {% endif %}
+		</li>
         <li class="nav-item d-flex align-items-center">
           <div class="d-flex justify-content-center align-items-center rounded-pill SelfStorage__bg_green me-2"
                style="height: 36px; width: 36px;">
@@ -302,21 +314,48 @@
           <div class="tab-pane fade show active" id="pills-{{ warehouse.pk }}-all" role="tabpanel"
                aria-labelledby="pills-{{ warehouse.pk }}-all-tab">
             {% for box in warehouse.boxes.all %}
-            <a href="#" class="row text-decoration-none py-3 px-4 mt-5 SelfStorage__boxlink">
-              <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span><span
-                      class="fs_24">№{{ box.id }}</span>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="fs_24">{{ box.square }} м²</span>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
-              </div>
-              <div class="col-12 col-lg-3">
-                <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8">От {{ box.price|floatformat:0 }} ₽</span>
-              </div>
-            </a>
+              {% if box.is_free %}
+                <a href="#" class="row text-decoration-none py-3 px-4 mt-5 SelfStorage__boxlink">
+                  <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                    <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span><span
+                          class="fs_24">№{{ box.id }}</span>
+                  </div>
+                  <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                    <span class="fs_24">{{ box.square }} м²</span>
+                  </div>
+                  <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                    <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
+                  </div>
+                  <div class="col-12 col-lg-3">
+                    <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+                      data-bs-toggle="modal"
+                      data-bs-target="#RentModalAll{{ box.id }}">
+                        От {{ box.price|floatformat:0 }} ₽
+                    </span>
+                    <div class="modal fade" id="RentModalAll{{ box.id }}" tabindex="-1">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <form method="post" action="{% url 'storage_units:rent_box' box.id %}">
+                            {% csrf_token %}
+                            <div class="modal-header justify-content-center">
+                              <h5 class="modal-title"><strong>Аренда бокса</strong></h5>
+                            </div>
+                            <div class="modal-body text-center p-4">
+                              <p><strong>Склад: {{ box.warehouse.name }}</strong></p>
+                              <p><strong>Бокс №{{ box.id }}</strong></p>
+                              <label><strong>Арендовать до:</strong></label>
+                              <input type="date" name="rent_until" required class="form-control">
+                            </div>
+                            <div class="modal-footer">
+                              <button type="submit" class="btn btn-primary">Подтвердить</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              {% endif %}
             {% endfor %}
             <div class="d-flex justify-content-center mt-5">
               <button class="btn w-auto py-3 px-5 SelfStorage__bg_orange SelfStorage__btn2_orange text-white text-center fs_24 border-8"
@@ -334,45 +373,103 @@
           <div class="tab-pane fade" id="pills-{{ warehouse.pk }}-to3" role="tabpanel"
                aria-labelledby="pills-{{ warehouse.pk }}-to3-tab">
             {% for box in warehouse.boxes.all %}
-            {% if box.square <= 3 %}
-            <a href="#" class="row text-decoration-none py-3 px-4 mt-5 SelfStorage__boxlink">
-              <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span><span
-                      class="fs_24">№{{ box.id }}</span>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="fs_24">{{ box.square }} м²</span>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
-              </div>
-              <div class="col-12 col-lg-3">
-                <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8">От {{ box.price|floatformat:0 }} ₽</span>
-              </div>
-            </a>
-            {% endif %}
+              {% if box.square <= 3 %}
+                {% if box.is_free %}
+
+                  <a href="#" class="row text-decoration-none py-3 px-4 mt-5 SelfStorage__boxlink">
+                    <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span><span
+                            class="fs_24">№{{ box.id }}</span>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="fs_24">{{ box.square }} м²</span>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                      <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+                        data-bs-toggle="modal"
+                        data-bs-target="#RentModal3{{ box.id }}">
+                          От {{ box.price|floatformat:0 }} ₽
+                      </span>
+                      <div class="modal fade" id="RentModal3{{ box.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <form method="post" action="{% url 'storage_units:rent_box' box.id %}">
+                              {% csrf_token %}
+                              <div class="modal-header justify-content-center">
+                                <h5 class="modal-title"><strong>Аренда бокса</strong></h5>
+                              </div>
+                              <div class="modal-body text-center p-4">
+                                <p><strong>Склад: {{ box.warehouse.name }}</strong></p>
+                                <p><strong>Бокс №{{ box.id }}</strong></p>
+                                <label><strong>Арендовать до:</strong></label>
+                                <input type="date" name="rent_until" required class="form-control">
+                              </div>
+                              <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Подтвердить</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                {% endif %}
+              {% endif %}
             {% endfor %}
           </div>
           <div class="tab-pane fade" id="pills-{{ warehouse.pk }}-to10" role="tabpanel"
                aria-labelledby="pills-{{ warehouse.pk }}-to10-tab">
             {% for box in warehouse.boxes.all %}
-            {% if box.square > 3 and box.square <= 10 %}
-            <a href="#" class="row text-decoration-none py-3 px-4 mt-5 SelfStorage__boxlink">
-              <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span><span
-                      class="fs_24">№{{ box.id }}</span>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="fs_24">{{ box.square }} м²</span>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
-              </div>
-              <div class="col-12 col-lg-3">
-                <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8">От {{ box.price|floatformat:0 }} ₽</span>
-              </div>
-            </a>
-            {% endif %}
+              {% if box.square > 3 and box.square <= 10 %}
+                {% if box.is_free %}
+
+                  <a href="#" class="row text-decoration-none py-3 px-4 mt-5 SelfStorage__boxlink">
+                    <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span><span
+                            class="fs_24">№{{ box.id }}</span>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="fs_24">{{ box.square }} м²</span>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                      <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+                        data-bs-toggle="modal"
+                        data-bs-target="#RentModal10{{ box.id }}">
+                        От {{ box.price|floatformat:0 }} ₽
+                      </span>
+                      <div class="modal fade" id="RentModal10{{ box.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <form method="post" action="{% url 'storage_units:rent_box' box.id %}">
+                              {% csrf_token %}
+                              <div class="modal-header justify-content-center">
+                                <h5 class="modal-title"><strong>Аренда бокса</strong></h5>
+                              </div>
+                              <div class="modal-body text-center p-4">
+                                <p><strong>Склад: {{ box.warehouse.name }}</strong></p>
+                                <p><strong>Бокс №{{ box.id }}</strong></p>
+                                <label><strong>Арендовать до:</strong></label>
+                                <input type="date" name="rent_until" required class="form-control">
+                              </div>
+                              <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Подтвердить</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                {% endif %}
+              {% endif %}
             {% endfor %}
             <div class="d-flex justify-content-center mt-5">
               <button class="btn w-auto py-3 px-5 SelfStorage__bg_orange SelfStorage__btn2_orange text-white text-center fs_24 border-8"
@@ -390,23 +487,52 @@
           <div class="tab-pane fade" id="pills-{{ warehouse.pk }}-from10" role="tabpanel"
                aria-labelledby="pills-{{ warehouse.pk }}-from10-tab">
             {% for box in warehouse.boxes.all %}
-            {% if box.square > 10 %}
-            <a href="#" class="row text-decoration-none py-3 px-4 mt-5 SelfStorage__boxlink">
-              <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span><span
-                      class="fs_24">№{{ box.id }}</span>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="fs_24">{{ box.square }} м²</span>
-              </div>
-              <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
-                <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
-              </div>
-              <div class="col-12 col-lg-3">
-                <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8">От {{ box.price|floatformat:0 }} ₽</span>
-              </div>
-            </a>
-            {% endif %}
+              {% if box.square > 10 %}
+                {% if box.is_free %}
+
+                  <a href="#" class="row text-decoration-none py-3 px-4 mt-5 SelfStorage__boxlink">
+                    <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="SelfStorage_green fs_24 me-2">{{ box.floor }} эт.</span><span
+                            class="fs_24">№{{ box.id }}</span>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="fs_24">{{ box.square }} м²</span>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3 d-flex justify-content-center align-items-center">
+                      <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                      <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+                        data-bs-toggle="modal"
+                        data-bs-target="#RentModal11{{ box.id }}">
+                        От {{ box.price|floatformat:0 }} ₽
+                      </span>
+                      <div class="modal fade" id="RentModal11{{ box.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <form method="post" action="{% url 'storage_units:rent_box' box.id %}">
+                              {% csrf_token %}
+                              <div class="modal-header justify-content-center">
+                                <h5 class="modal-title"><strong>Аренда бокса</strong></h5>
+                              </div>
+                              <div class="modal-body text-center p-4">
+                                <p><strong>Склад: {{ box.warehouse.name }}</strong></p>
+                                <p><strong>Бокс №{{ box.id }}</strong></p>
+                                <label><strong>Арендовать до:</strong></label>
+                                <input type="date" name="rent_until" required class="form-control">
+                              </div>
+                              <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Подтвердить</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+
+                {% endif %}
+              {% endif %}
             {% endfor %}
           </div>
         </div>

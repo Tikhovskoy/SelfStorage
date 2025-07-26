@@ -33,11 +33,11 @@
 		</div>
 		<div class="col-6 col-md-4 d-flex flex-column">
 			<p><a class="link-dark text-decoration-none" href="{% url 'storage_units:faq' %}">Правила хранения</a></p>
-			<p><a href="#" class="link-dark text-decoration-none">Адреса складов</a></p>
+			<p><a href="{% url 'storage_units:boxes_list' %}" class="link-dark text-decoration-none">Адреса складов</a></p>
 			<p><a href="#" class="link-dark text-decoration-none">Отзывы</a></p>
 		</div>
 		<div class="col-6 col-md-4 d-flex flex-column">
-			<p><a href="#" class="link-dark text-decoration-none">Политика конфиденциальности</a></p>
+			<p><a href="{% url 'storage_units:privacy_policy'%}" class="link-dark text-decoration-none">Политика конфиденциальности</a></p>
 			<p><a href="#" class="link-dark text-decoration-none">Правовые документы</a></p>
 			<p><a href="#" class="link-dark text-decoration-none">Контакты</a></p>
 		</div>

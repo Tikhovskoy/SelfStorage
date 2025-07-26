@@ -82,6 +82,7 @@ class Box(models.Model):
 		blank=True,
 		validators=[MinValueValidator(1)],
 		verbose_name='Площадь',
+		help_text='Не обязятельно к заполнению. Расчитывается автоматически'
 	)
 	price = models.DecimalField(
 		max_digits=10,

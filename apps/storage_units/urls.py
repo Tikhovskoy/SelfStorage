@@ -8,7 +8,7 @@ from .views import (
     tariffs_view,
     calculate_cost_view,
     boxes_list_view,
-    renew_box,
+    renew_box, PrivacyPolicyView,
 )
 from apps.orders.views import register_view, login_view, logout_view, simple_password_reset_view
 
@@ -28,4 +28,5 @@ urlpatterns = [
     path('simple-reset/', simple_password_reset_view, name='simple_password_reset'),
     path('my-rent/<int:box_id>/renew/', renew_box, name='renew_box'),
     path('rent/<int:box_id>/', rent_box, name='rent_box'),
+    path("privacy-policy/", PrivacyPolicyView.as_view(), name="privacy_policy")
 ]

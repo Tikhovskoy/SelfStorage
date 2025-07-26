@@ -160,5 +160,5 @@ def renew_box(request, box_id):
     if renew_date:
         box.paid_for = renew_date
         box.save()
-        
+
     return redirect('storage_units:my_rent')

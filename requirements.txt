@@ -4,3 +4,5 @@ sqlparse==0.5.3
 django-phonenumber-field==8.1.0
 phonenumbers==9.0.6
 pillow==11.3.0
+psycopg[binary]==3.1.19
+environs==11.0.0

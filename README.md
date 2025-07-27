@@ -133,9 +133,8 @@ docker compose exec backend python manage.py createsuperuser
 ```
 
 Панель администратора доступна по адресу:
-[http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+[http://158.160.80.113/admin/](http://158.160.80.113/admin/)
 
 ## Доступ к сайту
 
-[http://158.160.80.113/](SelfStorage)
-
+[SelfStorage](http://158.160.80.113/)

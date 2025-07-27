@@ -10,6 +10,8 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 import json
 from apps.storage_units.models import Box
+from apps.promo.models import PromoCode
+from datetime import datetime
 
 
 def index(request):
@@ -173,10 +175,39 @@ def rent_box(request, box_id):
 
     if box.tenant is None:
         rent_until = request.POST.get('rent_until')
+        promo_code_text = request.POST.get('promo_code', '').strip()
+        discount = 0
+
+        if promo_code_text:
+            try:
+                promo = PromoCode.objects.get(code__iexact=promo_code_text)
+                if promo.is_active(client=client):
+                    discount = promo.discount_percent
+                    promo.used_count += 1
+                    promo.used_clients.add(client)
+                    promo.save()
+                    messages.success(request, f"Промокод применён: скидка {discount}%")
+                else:
+                    messages.warning(request, "Промокод недействителен или уже использован.")
+            except PromoCode.DoesNotExist:
+                messages.warning(request, "Промокод не найден.")
+
         if rent_until:
+            try:
+                rent_until_date = datetime.strptime(rent_until, "%Y-%m-%d").date()
+            except ValueError:
+                messages.error(request, "Неверный формат даты.")
+                return redirect('storage_units:boxes_list')
+
             box.tenant = client
-            box.paid_for = rent_until
+            box.paid_for = rent_until_date
             box.is_free = False
             box.save()
+
+
+            if discount > 0:
+                messages.success(request, f"Вы арендовали бокс со скидкой {discount}%.")
+            else:
+                messages.success(request, "Бокс успешно арендован.")
 
     return redirect('storage_units:my_rent')

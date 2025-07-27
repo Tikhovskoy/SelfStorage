@@ -1,14 +1,15 @@
 #!/bin/bash
 
 set -e
+set -o pipefail
 
 cd "$(dirname "$0")" || exit 1
 
 echo "Обновление проекта SelfStorage"
 
-echo "Git pull (если это репозиторий)"
 if [ -d ".git" ]; then
-  git pull
+  echo "Git pull"
+  git pull --rebase
 else
   echo "Не git-проект — пропускаем git pull"
 fi
@@ -17,7 +18,8 @@ echo "Пересобираем и запускаем контейнеры"
 docker compose up -d --build
 
 echo "Применяем миграции"
-docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py makemigrations --noinput || echo "Нет новых миграций"
+docker compose exec backend python manage.py migrate --noinput
 
 echo "Собираем статику"
 docker compose exec backend python manage.py collectstatic --noinput

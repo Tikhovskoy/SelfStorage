@@ -1,6 +1,7 @@
 from django.db.models import Count, Q
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.http import require_POST
+from django.views.generic import TemplateView
 
 from .models import Warehouse, Box, Tariff
 from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm, SimplePasswordResetForm
@@ -235,3 +236,7 @@ def rent_box(request, box_id):
                 messages.success(request, "Бокс успешно арендован.")
 
     return redirect('storage_units:my_rent')
+
+
+class PrivacyPolicyView(TemplateView):
+    template_name = "privacy_policy.html"

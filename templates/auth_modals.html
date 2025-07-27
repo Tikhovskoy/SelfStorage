@@ -10,6 +10,13 @@
                     class="d-flex flex-column align-items-center" style="max-width: 420px">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger w-100 text-center">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     <h1 class="modal-title text-center fw-bold mb-3">Регистрация</h1>
                     <input type="email" name="email" value="{{ registration_form.email.value|default_if_none:'' }}"
                         class="form-control border-8 mb-2 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
@@ -56,6 +63,13 @@
                     class="d-flex flex-column align-items-center" style="max-width: 420px;">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger w-100 text-center">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     <h1 class="modal-title text-center fw-bold mb-3">Вход</h1>
                     {{ login_form.non_field_errors }}
                     <div class="w-100 mb-4">
@@ -93,6 +107,13 @@
                     class="d-flex flex-column align-items-center" style="max-width: 420px;">
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger w-100 text-center">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                     <h1 class="modal-title text-center fw-bold mb-3">Восстановление пароля</h1>
                     {{ reset_form.non_field_errors }}
                     <div class="w-100 mb-4">

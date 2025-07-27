@@ -234,7 +234,6 @@
 												<p class="mb-2 fs-5"><strong>Склад: {{ box.warehouse.name }}</strong>
 												</p>
 												<p class="mb-2 fs-5"><strong>Бокс №{{ box.id }}</strong></p>
-
 												<form method="post" action="{% url 'storage_units:renew_box' box.id %}">
 													{% csrf_token %}
 													<div class="mb-3">
@@ -242,6 +241,13 @@
 															class="form-label fw-semibold">Продлить до:</label>
 														<input type="date" class="form-control text-center"
 															name="renew_date" id="renew-date-{{ box.id }}" required>
+													</div>
+													<div class="mb-3">
+														<label for="promo-code-{{ box.id }}"
+															class="form-label fw-semibold">Промокод (если есть):</label>
+														<input type="text" class="form-control text-center"
+															name="promo_code" id="promo-code-{{ box.id }}"
+															placeholder="Введите промокод">
 													</div>
 													<button type="submit"
 														class="btn btn-success px-4">Подтвердить</button>

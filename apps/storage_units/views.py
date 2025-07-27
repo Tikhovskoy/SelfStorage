@@ -155,14 +155,38 @@ def boxes_list_view(request):
 
 
 @require_POST
+@login_required
 def renew_box(request, box_id):
     box = get_object_or_404(Box, id=box_id)
+    client = Client.objects.get(user=request.user)
+
     renew_date = request.POST.get('renew_date')
+    promo_code_text = request.POST.get('promo_code', '').strip()
+    discount = 0
+
+    if promo_code_text:
+        try:
+            promo = PromoCode.objects.get(code__iexact=promo_code_text)
+            if promo.is_active(client=client):
+                discount = promo.discount_percent
+                promo.used_count += 1
+                promo.used_clients.add(client)
+                promo.save()
+                messages.success(request, f"Промокод применён: скидка {discount}% на продление.")
+            else:
+                messages.warning(request, "Промокод недействителен или уже использован.")
+        except PromoCode.DoesNotExist:
+            messages.warning(request, "Промокод не найден.")
 
     if renew_date:
         box.paid_for = renew_date
         box.is_free = False
         box.save()
+
+        if discount > 0:
+            messages.success(request, f"Аренда продлена со скидкой {discount}%.")
+        else:
+            messages.success(request, "Аренда продлена.")
 
     return redirect('storage_units:my_rent')
 

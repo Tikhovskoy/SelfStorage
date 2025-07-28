@@ -327,11 +327,19 @@
                     <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
                   </div>
                   <div class="col-12 col-lg-3">
-                    <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
-                      data-bs-toggle="modal"
-                      data-bs-target="#RentModalAll{{ box.id }}">
-                        От {{ box.price|floatformat:0 }} ₽
-                    </span>
+				  {% if user.is_authenticated %}
+				    <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+						  data-bs-toggle="modal"
+						  data-bs-target="#RentModalAll{{ box.id }}">
+					  От {{ box.price|floatformat:0 }} ₽
+				    </span>
+				  {% else %}
+				    <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+					  	  data-bs-toggle="modal"
+						  data-bs-target="#SignModal">
+					  Войдите, чтобы арендовать
+				    </span>
+				  {% endif %}
                     <div class="modal fade" id="RentModalAll{{ box.id }}" tabindex="-1">
                       <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -390,11 +398,19 @@
                       <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
                     </div>
                     <div class="col-12 col-lg-3">
-                      <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
-                        data-bs-toggle="modal"
-                        data-bs-target="#RentModal3{{ box.id }}">
-                          От {{ box.price|floatformat:0 }} ₽
-                      </span>
+					{% if user.is_authenticated %}
+					  <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+							data-bs-toggle="modal"
+							data-bs-target="#RentModal3{{ box.id }}">
+						От {{ box.price|floatformat:0 }} ₽
+					  </span>
+					{% else %}
+					  <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+							data-bs-toggle="modal"
+							data-bs-target="#SignModal">
+						Войдите, чтобы арендовать
+					  </span>
+					{% endif %}
                       <div class="modal fade" id="RentModal3{{ box.id }}" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                           <div class="modal-content">
@@ -441,11 +457,19 @@
                       <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
                     </div>
                     <div class="col-12 col-lg-3">
-                      <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
-                        data-bs-toggle="modal"
-                        data-bs-target="#RentModal10{{ box.id }}">
-                        От {{ box.price|floatformat:0 }} ₽
-                      </span>
+					{% if user.is_authenticated %}
+					  <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+							data-bs-toggle="modal"
+							data-bs-target="#RentModal10{{ box.id }}">
+						От {{ box.price|floatformat:0 }} ₽
+					  </span>
+					{% else %}
+					  <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+							data-bs-toggle="modal"
+							data-bs-target="#SignModal">
+						Войдите, чтобы арендовать
+					  </span>
+					{% endif %}
                       <div class="modal fade" id="RentModal10{{ box.id }}" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                           <div class="modal-content">
@@ -504,11 +528,19 @@
                       <span class="fs_24">{{ box.length }} х {{ box.width }} х {{ box.height|floatformat:1 }} м²</span>
                     </div>
                     <div class="col-12 col-lg-3">
-                      <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
-                        data-bs-toggle="modal"
-                        data-bs-target="#RentModal11{{ box.id }}">
-                        От {{ box.price|floatformat:0 }} ₽
-                      </span>
+					{% if user.is_authenticated %}
+					  <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+							data-bs-toggle="modal"
+							data-bs-target="#RentModal11{{ box.id }}">
+						От {{ box.price|floatformat:0 }} ₽
+					  </span>
+					{% else %}
+					  <span class="btn my-2 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange border-8"
+							data-bs-toggle="modal"
+							data-bs-target="#SignModal">
+						Войдите, чтобы арендовать
+					  </span>
+					{% endif %}
                       <div class="modal fade" id="RentModal11{{ box.id }}" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                           <div class="modal-content">

@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "apps.promo",
     "apps.business",
     'phonenumber_field',
+    'apps.shortener',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +122,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_REDIRECT_URL = 'storage_units:my_rent'
 LOGIN_URL = '/login/'
+
+SELFSTORAGE_DOMAIN = env("SELFSTORAGE_DOMAIN", default="127.0.0.1:8000")

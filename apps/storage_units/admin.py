@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Warehouse, Box, Tariff
+from .models import Warehouse, Box, Tariff, Rental
 
 
 @admin.register(Warehouse)
@@ -21,3 +21,8 @@ class TariffAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'min_square_meters', 'max_square_meters']
     list_filter = ['min_square_meters']
     search_fields = ['name']
+
+
+@admin.register(Rental)
+class RentalAdmin(admin.ModelAdmin):
+    list_display = ('client', 'box', 'start_date', 'end_date')

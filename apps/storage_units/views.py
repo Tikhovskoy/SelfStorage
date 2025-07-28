@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 import json
-from apps.storage_units.models import Box
+from apps.storage_units.models import Box, Rental
 from apps.promo.models import PromoCode
 from datetime import datetime
 
@@ -116,6 +116,8 @@ def my_rent(request):
         form = ProfileForm(instance=client)
 
     boxes = Box.objects.filter(tenant=client)
+    for box in boxes:
+        box.rental = Rental.objects.filter(box=box).first()
 
     context = {
         'client': client,
@@ -184,6 +186,18 @@ def renew_box(request, box_id):
         box.is_free = False
         box.save()
 
+        rental, created = Rental.objects.get_or_create(
+            box=box,
+            defaults={
+                'client': client,
+                'end_date': renew_date
+            }
+        )
+
+        if not created:
+            rental.end_date = renew_date
+            rental.save()
+
         if discount > 0:
             messages.success(request, f"Аренда продлена со скидкой {discount}%.")
         else:
@@ -229,13 +243,21 @@ def rent_box(request, box_id):
             box.is_free = False
             box.save()
 
+            Rental.objects.create(
+                client=client,
+                box=box,
+                end_date=rent_until_date
+            )
 
             if discount > 0:
                 messages.success(request, f"Вы арендовали бокс со скидкой {discount}%.")
             else:
                 messages.success(request, "Бокс успешно арендован.")
+    else:
+        messages.warning(request, "Этот бокс уже занят.")
 
     return redirect('storage_units:my_rent')
+
 
 @require_POST
 def handle_email_cost_request(request):

@@ -1,6 +1,8 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Min, Q
+from .qr_utils import generate_qr_code_image
+import uuid
 
 from apps.orders.models import Client
 
@@ -146,3 +148,27 @@ class Tariff(models.Model):
 
 	def __str__(self):
 		return f"{self.name} - {self.price} ₽/мес ({self.min_square_meters}-{self.max_square_meters if self.max_square_meters else '∞'} м²)"
+
+class Rental(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='Клиент')
+    box = models.OneToOneField(Box, on_delete=models.CASCADE, verbose_name='Бокс')
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField()
+
+    qr_token = models.CharField(max_length=64, unique=True, blank=True)
+    qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.qr_token:
+            self.qr_token = uuid.uuid4().hex
+        if not self.qr_code:
+            url = f"https://your-domain.ru/open-box/?token={self.qr_token}"
+            self.qr_code = generate_qr_code_image(url, filename=f"qr_{self.qr_token}.png")
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Аренда бокса {self.box.id} клиентом {self.client.user.username}"
+
+    class Meta:
+        verbose_name = "Аренда"
+        verbose_name_plural = "Аренды"

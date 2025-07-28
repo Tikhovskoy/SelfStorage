@@ -49,18 +49,6 @@ def index(request):
             'free_boxes': free_boxes,
         }
 
-    if request.method == 'POST' and 'email' in request.POST:
-        email = request.POST.get('email')
-        if email:
-            CostCalculationRequest.objects.create(email=email)
-
-            request.session['last_email'] = email
-            request.session['estimated_cost'] = 'от 190 ₽ за м²'
-            return redirect('storage_units:cost_confirmation')
-        else:
-            messages.error(request, 'Пожалуйста, укажите корректный e-mail.')
-            return redirect('storage_units:index')
-
     form_data = request.session.pop('reset_form_data', None)
     form_errors_json = request.session.pop('reset_form_errors', None)
 
@@ -248,6 +236,18 @@ def rent_box(request, box_id):
                 messages.success(request, "Бокс успешно арендован.")
 
     return redirect('storage_units:my_rent')
+
+@require_POST
+def handle_email_cost_request(request):
+    email = request.POST.get('email')
+    if email:
+        CostCalculationRequest.objects.create(email=email)
+        request.session['last_email'] = email
+        request.session['estimated_cost'] = 'от 190 ₽ за м²'
+        return redirect('storage_units:cost_confirmation')
+    else:
+        messages.error(request, 'Пожалуйста, укажите корректный e-mail.')
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def cost_confirmation(request):
     email = request.session.pop('last_email', None)

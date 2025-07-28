@@ -9,7 +9,8 @@ from .views import (
     calculate_cost_view,
     boxes_list_view,
     renew_box, PrivacyPolicyView,
-    cost_confirmation
+    cost_confirmation,
+    handle_email_cost_request,
 )
 from apps.orders.views import register_view, login_view, logout_view, simple_password_reset_view
 
@@ -31,4 +32,5 @@ urlpatterns = [
     path('rent/<int:box_id>/', rent_box, name='rent_box'),
     path("privacy-policy/", PrivacyPolicyView.as_view(), name="privacy_policy"),
     path('cost-confirmation/', cost_confirmation, name='cost_confirmation'),
+    path('submit-cost-request/', handle_email_cost_request, name='submit_cost_request'),
 ]

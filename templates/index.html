@@ -78,7 +78,7 @@
 				<h1 class="fw-bold SelfStorage_green mb-5">Доставка и бережное хранение ваших вещей</h1>
 				<h4 class="fw-lighter SelfStorage_grey mb-5">Аренда бокса на любой срок Бесплатная доставка от вашего
 					дома</h4>
-				<form method="POST" action="">
+				<form method="POST" action="{% url 'storage_units:submit_cost_request' %}">
 					{% csrf_token %}
 					<input type="email" required name="email"
 						class="form-control border-8 mb-4 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
@@ -95,7 +95,6 @@
 			</div>
 			<div class="col-12 col-lg-6 SelfStorage__img"></div>
 		</article>
-
 		<article class="text-center row pt-header">
 			<h1 class="fw-bold SelfStorage_green mb-5">Чем мы можем помочь?</h1>
 			<div class="col-12 col-sm-4 mb-4 mb-sm-0">

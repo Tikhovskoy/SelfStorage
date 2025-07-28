@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 
 from .models import Warehouse, Box, Tariff
 from apps.orders.forms import RegistrationForm, LoginForm, ProfileForm, SimplePasswordResetForm
-from apps.orders.models import Client
+from apps.orders.models import Client, CostCalculationRequest
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -48,6 +48,18 @@ def index(request):
             'total_boxes': total_boxes,
             'free_boxes': free_boxes,
         }
+
+    if request.method == 'POST' and 'email' in request.POST:
+        email = request.POST.get('email')
+        if email:
+            CostCalculationRequest.objects.create(email=email)
+
+            request.session['last_email'] = email
+            request.session['estimated_cost'] = 'от 190 ₽ за м²'
+            return redirect('storage_units:cost_confirmation')
+        else:
+            messages.error(request, 'Пожалуйста, укажите корректный e-mail.')
+            return redirect('storage_units:index')
 
     form_data = request.session.pop('reset_form_data', None)
     form_errors_json = request.session.pop('reset_form_errors', None)
@@ -149,8 +161,8 @@ def boxes_list_view(request):
     )
 
     context = {
-        'title': 'Наши боксы',  # Заголовок страницы
-        'warehouses': warehouses,  # Список объектов Warehouse с аннотациями
+        'title': 'Наши боксы',
+        'warehouses': warehouses,
     }
     return render(request, 'boxes.html', context)
 
@@ -236,6 +248,19 @@ def rent_box(request, box_id):
                 messages.success(request, "Бокс успешно арендован.")
 
     return redirect('storage_units:my_rent')
+
+def cost_confirmation(request):
+    email = request.session.pop('last_email', None)
+    cost = request.session.pop('estimated_cost', None)
+
+    if not email or not cost:
+        return redirect('storage_units:index')
+
+    context = {
+        'email': email,
+        'estimated_cost': cost,
+    }
+    return render(request, 'cost_confirmation.html', context)
 
 
 class PrivacyPolicyView(TemplateView):

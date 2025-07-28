@@ -52,3 +52,16 @@ class Client(models.Model):
 		if self.last_name:
 			return f'{self.first_name} {self.last_name}'
 		return self.first_name
+
+class CostCalculationRequest(models.Model):
+    email = models.EmailField("E-mail")
+    created_at = models.DateTimeField("Дата заявки", auto_now_add=True)
+    is_processed = models.BooleanField("Обработано", default=False)
+
+    class Meta:
+        verbose_name = "Заявка на расчёт стоимости"
+        verbose_name_plural = "Заявки на расчёт стоимости"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.email} — {'обработано' if self.is_processed else 'не обработано'}"

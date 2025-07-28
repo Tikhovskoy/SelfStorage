@@ -7,6 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+DEBUG = env.bool("DEBUG", default=True)
+
 USE_SQLITE = env.bool("USE_SQLITE", default=True)
 
 SECRET_KEY = env("SECRET_KEY")
@@ -44,7 +46,6 @@ ROOT_URLCONF = "selfstorage.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        # "DIRS": [BASE_DIR / "templates"],
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -104,11 +105,14 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-# STATICFILES_DIRS = [BASE_DIR / "static"]
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / "static"]
+    STATIC_ROOT = None
+else:
+    STATICFILES_DIRS = []
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

@@ -1,0 +1,17 @@
+[tool.black]
+line-length = 88
+target-version = ['py38']
+exclude = '''
+/(
+    venv|
+    .venv|
+    migrations|
+    __pycache__|
+    manage.py
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+skip = ["venv", ".venv", "migrations"]

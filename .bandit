@@ -1,0 +1,12 @@
+exclude_dirs:
+  - venv
+  - .venv
+  - media
+  - static
+  - migrations
+  - __pycache__
+  - .git
+
+skips:
+  - B101  # assert
+  - B108  # hardcoded tmp files

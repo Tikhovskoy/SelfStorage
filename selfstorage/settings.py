@@ -1,11 +1,12 @@
-from pathlib import Path
 import os
+from pathlib import Path
+
 import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 DEBUG = env.bool("DEBUG", default=True)
 
@@ -22,14 +23,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "apps.orders",
     "apps.customers",
     "apps.storage_units",
     "apps.promo",
     "apps.business",
-    'phonenumber_field',
-    'apps.shortener',
+    "phonenumber_field",
+    "apps.shortener",
 ]
 
 MIDDLEWARE = [
@@ -47,7 +47,7 @@ ROOT_URLCONF = "selfstorage.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -120,7 +120,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = 'storage_units:my_rent'
-LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = "storage_units:my_rent"
+LOGIN_URL = "/login/"
 
 SELFSTORAGE_DOMAIN = env("SELFSTORAGE_DOMAIN", default="127.0.0.1:8000")

@@ -122,3 +122,16 @@ LOGIN_REDIRECT_URL = "storage_units:my_rent"
 LOGIN_URL = "/login/"
 
 SELFSTORAGE_DOMAIN = env("SELFSTORAGE_DOMAIN", default="127.0.0.1:8000")
+
+# Почта: в разработке письма выводятся в консоль, на сервере задайте SMTP в .env
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+)
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=25)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
+DEFAULT_FROM_EMAIL = env(
+    "DEFAULT_FROM_EMAIL", default="SelfStorage <no-reply@selfstorage.local>"
+)

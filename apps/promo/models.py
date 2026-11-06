@@ -32,7 +32,7 @@ class PromoCode(models.Model):
         return f"{self.code} ({self.discount_percent}%)"
 
     def is_active(self, client=None):
-        today = timezone.now().date()
+        today = timezone.localdate()
 
         if not (self.active_from <= today <= self.active_to):
             return False

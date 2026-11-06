@@ -3,8 +3,10 @@ from decimal import Decimal
 
 import pytest
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from apps.orders.models import Client
+from apps.promo.models import PromoCode
 from apps.storage_units.models import Box, Rental, Warehouse
 
 PASSWORD = "StrongPass-12345"
@@ -86,5 +88,23 @@ def make_rental(make_box):
         box.paid_for = end_date
         box.save()
         return Rental.objects.create(client=client, box=box, end_date=end_date)
+
+    return factory
+
+
+@pytest.fixture
+def make_promo(db):
+    """Фабрика промокодов; по умолчанию действует со вчера на 30 дней, скидка 10%."""
+
+    def factory(code="SUMMER10", discount_percent=10, **extra):
+        today = timezone.localdate()
+        defaults = dict(
+            code=code,
+            discount_percent=discount_percent,
+            active_from=today - timedelta(days=1),
+            active_to=today + timedelta(days=30),
+        )
+        defaults.update(extra)
+        return PromoCode.objects.create(**defaults)
 
     return factory

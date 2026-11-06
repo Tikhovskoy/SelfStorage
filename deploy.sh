@@ -18,7 +18,6 @@ echo "Пересобираем и запускаем контейнеры"
 docker compose up -d --build
 
 echo "Применяем миграции"
-docker compose exec backend python manage.py makemigrations --noinput || echo "Нет новых миграций"
 docker compose exec backend python manage.py migrate --noinput
 
 echo "Собираем статику"

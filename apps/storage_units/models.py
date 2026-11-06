@@ -161,6 +161,17 @@ class Rental(models.Model):
     box = models.OneToOneField(Box, on_delete=models.CASCADE, verbose_name="Бокс")
     start_date = models.DateField(auto_now_add=True)
     end_date = models.DateField()
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Итоговая цена",
+        help_text="Цена бокса с учётом скидки по промокоду на момент аренды",
+    )
+    discount_percent = models.PositiveSmallIntegerField(
+        default=0, verbose_name="Скидка (%)"
+    )
 
     qr_token = models.CharField(max_length=64, unique=True, blank=True)
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)

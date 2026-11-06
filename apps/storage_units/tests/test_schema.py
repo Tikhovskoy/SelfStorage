@@ -10,3 +10,10 @@ def test_модели_не_расходятся_с_миграциями(db):
 
 def test_варианты_преимуществ_склада_упорядочены():
     assert isinstance(Warehouse.ADVANTAGE_CHOICE, (list, tuple))
+
+
+def test_у_аренды_есть_итоговая_цена_и_скидка(client_a, make_rental):
+    rental = make_rental(client_a)
+
+    assert rental.price is None
+    assert rental.discount_percent == 0

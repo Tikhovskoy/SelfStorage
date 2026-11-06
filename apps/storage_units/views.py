@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
@@ -11,7 +12,7 @@ from django.views.generic import TemplateView
 from apps.orders.forms import LoginForm, ProfileForm, RegistrationForm
 from apps.orders.models import CostCalculationRequest
 from apps.orders.services import ensure_client
-from apps.promo.models import PromoCode
+from apps.promo.services import PromoError, redeem_promo
 from apps.storage_units.models import Rental
 
 from .models import Box, Tariff, Warehouse
@@ -151,48 +152,61 @@ def boxes_list_view(request):
     return render(request, "boxes.html", context)
 
 
+def _parse_date(request, raw_value):
+    """Разбирает дату из формы; при ошибке сообщает пользователю и даёт None."""
+    try:
+        return datetime.strptime(raw_value, "%Y-%m-%d").date()
+    except ValueError:
+        messages.error(request, "Неверный формат даты.")
+        return None
+
+
+def _apply_promo(request, client, code, box):
+    """Применяет промокод; если он не подходит, предупреждает и берёт полную цену."""
+    try:
+        return redeem_promo(client, code, box)
+    except PromoError as error:
+        messages.warning(request, str(error))
+        return redeem_promo(client, "", box)
+
+
 @require_POST
 @login_required
 def renew_box(request, box_id):
     client = ensure_client(request.user)
-    # продлевать можно только бокс, арендованный текущим клиентом
-    rental = get_object_or_404(
-        Rental.objects.select_related("box"), box_id=box_id, client=client
-    )
-    box = rental.box
+    # продлевать можно только бокс, арендованный текущим клиентом, иначе 404
+    get_object_or_404(Rental, box_id=box_id, client=client)
 
     renew_date = request.POST.get("renew_date")
-    promo_code_text = request.POST.get("promo_code", "").strip()
-    discount = 0
-
-    if promo_code_text:
-        try:
-            promo = PromoCode.objects.get(code__iexact=promo_code_text)
-            if promo.is_active(client=client):
-                discount = promo.discount_percent
-                promo.used_count += 1
-                promo.used_clients.add(client)
-                promo.save()
-                messages.success(
-                    request, f"Промокод применён: скидка {discount}% на продление."
-                )
-            else:
-                messages.warning(
-                    request, "Промокод недействителен или уже использован."
-                )
-        except PromoCode.DoesNotExist:
-            messages.warning(request, "Промокод не найден.")
+    promo_code = request.POST.get("promo_code", "")
 
     if renew_date:
-        box.paid_for = renew_date
-        box.is_free = False
-        box.save()
+        new_end_date = _parse_date(request, renew_date)
+        if new_end_date is None:
+            return redirect("storage_units:my_rent")
 
-        rental.end_date = renew_date
-        rental.save()
+        with transaction.atomic():
+            rental = get_object_or_404(
+                Rental.objects.select_for_update().select_related("box"),
+                box_id=box_id,
+                client=client,
+            )
+            box = rental.box
+            result = _apply_promo(request, client, promo_code, box)
 
-        if discount > 0:
-            messages.success(request, f"Аренда продлена со скидкой {discount}%.")
+            box.paid_for = new_end_date
+            box.is_free = False
+            box.save()
+
+            rental.end_date = new_end_date
+            rental.price = result.price
+            rental.discount_percent = result.discount_percent
+            rental.save()
+
+        if result.discount_percent:
+            messages.success(
+                request, f"Аренда продлена со скидкой {result.discount_percent}%."
+            )
         else:
             messages.success(request, "Аренда продлена.")
 
@@ -202,50 +216,45 @@ def renew_box(request, box_id):
 @require_POST
 @login_required
 def rent_box(request, box_id):
-    box = get_object_or_404(Box, id=box_id)
     client = ensure_client(request.user)
+    rent_until = request.POST.get("rent_until")
+    promo_code = request.POST.get("promo_code", "")
 
-    if box.tenant is None:
-        rent_until = request.POST.get("rent_until")
-        promo_code_text = request.POST.get("promo_code", "").strip()
-        discount = 0
+    rent_until_date = None
+    if rent_until:
+        rent_until_date = _parse_date(request, rent_until)
+        if rent_until_date is None:
+            return redirect("storage_units:boxes_list")
 
-        if promo_code_text:
-            try:
-                promo = PromoCode.objects.get(code__iexact=promo_code_text)
-                if promo.is_active(client=client):
-                    discount = promo.discount_percent
-                    promo.used_count += 1
-                    promo.used_clients.add(client)
-                    promo.save()
-                    messages.success(request, f"Промокод применён: скидка {discount}%")
-                else:
-                    messages.warning(
-                        request, "Промокод недействителен или уже использован."
-                    )
-            except PromoCode.DoesNotExist:
-                messages.warning(request, "Промокод не найден.")
+    with transaction.atomic():
+        # блокировка строки не даёт двум клиентам одновременно занять один бокс
+        box = get_object_or_404(Box.objects.select_for_update(), id=box_id)
 
-        if rent_until:
-            try:
-                rent_until_date = datetime.strptime(rent_until, "%Y-%m-%d").date()
-            except ValueError:
-                messages.error(request, "Неверный формат даты.")
-                return redirect("storage_units:boxes_list")
+        if box.tenant is not None:
+            messages.warning(request, "Этот бокс уже занят.")
+        elif rent_until_date is not None:
+            result = _apply_promo(request, client, promo_code, box)
 
             box.tenant = client
             box.paid_for = rent_until_date
             box.is_free = False
             box.save()
 
-            Rental.objects.create(client=client, box=box, end_date=rent_until_date)
+            Rental.objects.create(
+                client=client,
+                box=box,
+                end_date=rent_until_date,
+                price=result.price,
+                discount_percent=result.discount_percent,
+            )
 
-            if discount > 0:
-                messages.success(request, f"Вы арендовали бокс со скидкой {discount}%.")
+            if result.discount_percent:
+                messages.success(
+                    request,
+                    f"Вы арендовали бокс со скидкой {result.discount_percent}%.",
+                )
             else:
                 messages.success(request, "Бокс успешно арендован.")
-    else:
-        messages.warning(request, "Этот бокс уже занят.")
 
     return redirect("storage_units:my_rent")
 

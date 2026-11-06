@@ -10,12 +10,12 @@ from .qr_utils import generate_qr_code_image
 
 
 class Warehouse(models.Model):
-    ADVANTAGE_CHOICE = {
+    ADVANTAGE_CHOICE = [
         ("metro", "Рядом с метро"),
         ("parking", "Парковка"),
         ("ceilings", "Высокие потолки"),
         ("box", "Большие боксы"),
-    }
+    ]
 
     name = models.CharField(max_length=100, verbose_name="Название склада")
     address = models.TextField(verbose_name="Адрес")

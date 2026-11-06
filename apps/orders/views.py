@@ -4,8 +4,6 @@ from django.shortcuts import redirect
 
 from apps.orders.forms import LoginForm, RegistrationForm
 
-from .forms import SimplePasswordResetForm
-
 
 def register_view(request):
     if request.method == "POST":
@@ -43,15 +41,3 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Вы успешно вышли из аккаунта.")
     return redirect(referer)
-
-
-def simple_password_reset_view(request):
-    if request.method == "POST":
-        form = SimplePasswordResetForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Пароль успешно обновлён.")
-        else:
-            messages.error(request, "Ошибка при восстановлении пароля.")
-
-    return redirect(request.META.get("HTTP_REFERER", "/"))

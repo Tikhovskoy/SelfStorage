@@ -1,11 +1,6 @@
 from django.urls import path
 
-from apps.orders.views import (
-    login_view,
-    logout_view,
-    register_view,
-    simple_password_reset_view,
-)
+from apps.orders.views import login_view, logout_view, register_view
 
 from .views import (
     PrivacyPolicyView,
@@ -35,7 +30,6 @@ urlpatterns = [
     path("register/", register_view, name="register"),
     path("login/", login_view, name="login"),
     path("logout/", logout_view, name="logout"),
-    path("simple-reset/", simple_password_reset_view, name="simple_password_reset"),
     path("my-rent/<int:box_id>/renew/", renew_box, name="renew_box"),
     path("rent/<int:box_id>/", rent_box, name="rent_box"),
     path("privacy-policy/", PrivacyPolicyView.as_view(), name="privacy_policy"),

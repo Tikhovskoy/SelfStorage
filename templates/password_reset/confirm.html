@@ -1,0 +1,33 @@
+{% extends 'password_reset/base.html' %}
+
+{% block title %}Новый пароль{% endblock %}
+
+{% block content %}
+{% if validlink %}
+<h1 class="fw-bold SelfStorage_green mb-3">Новый пароль</h1>
+<p class="SelfStorage_grey mb-4">Придумайте и введите новый пароль дважды.</p>
+<form method="post" class="w-100">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="w-100 mb-4">
+        {{ form.new_password1.errors }}
+        <input type="password" name="new_password1"
+            class="form-control border-8 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+            placeholder="Новый пароль" autocomplete="new-password" required>
+    </div>
+    <div class="w-100 mb-4">
+        {{ form.new_password2.errors }}
+        <input type="password" name="new_password2"
+            class="form-control border-8 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
+            placeholder="Подтверждение пароля" autocomplete="new-password" required>
+    </div>
+    <button type="submit"
+        class="btn border-8 py-3 px-5 mb-3 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange">Сменить
+        пароль</button>
+</form>
+{% else %}
+<h1 class="fw-bold SelfStorage_green mb-3">Ссылка недействительна</h1>
+<h4 class="SelfStorage_grey mb-4">Ссылка для смены пароля устарела или уже была использована.</h4>
+<a href="{% url 'orders:password_reset' %}" class="SelfStorage_green fs_24">Запросить новую ссылку</a>
+{% endif %}
+{% endblock %}

@@ -84,61 +84,11 @@
                             class="form-control border-8 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
                             placeholder="Пароль" required>
                     </div>
-                    <a href="#" class="SelfStorage_orange mb-4" data-bs-toggle="modal" data-bs-target="#ForgetModal"
-                        data-bs-dismiss="modal">Забыли пароль?</a>
+                    <a href="{% url 'orders:password_reset' %}" class="SelfStorage_orange mb-4">Забыли пароль?</a>
                     <button type="submit"
                         class="btn border-8 py-3 px-5 mb-3 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange">Войти</button>
                     <span>Нет аккаунта? <a href="#" class="SelfStorage_orange" data-bs-toggle="modal"
                             data-bs-target="#RegModal" data-bs-dismiss="modal">Зарегистрируйтесь на сайте</a></span>
-                </form>
-            </div>
-        </div>
-    </div>
-</aside>
-
-<aside class="modal fade" id="ForgetModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body d-flex justify-content-center align-items-center">
-                <form method="post" action="{% url 'storage_units:simple_password_reset' %}"
-                    class="d-flex flex-column align-items-center" style="max-width: 420px;">
-                    {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-danger w-100 text-center">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-                    <h1 class="modal-title text-center fw-bold mb-3">Восстановление пароля</h1>
-                    {{ reset_form.non_field_errors }}
-                    <div class="w-100 mb-4">
-                        {{ reset_form.email.errors }}
-                        <input type="email" name="email" value="{{ reset_form.email.value|default_if_none:'' }}"
-                            class="form-control border-8 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
-                            placeholder="E-mail" required>
-                    </div>
-                    <div class="w-100 mb-4">
-                        {{ reset_form.new_password.errors }}
-                        <input type="password" name="new_password"
-                            class="form-control border-8 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
-                            placeholder="Новый пароль" required>
-                    </div>
-                    <div class="w-100 mb-4">
-                        {{ reset_form.confirm_password.errors }}
-                        <input type="password" name="confirm_password"
-                            class="form-control border-8 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey"
-                            placeholder="Подтверждение пароля" required>
-                    </div>
-                    <button type="submit"
-                        class="btn border-8 py-3 px-5 mt-2 mb-3 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange">Сменить
-                        пароль</button>
-                    <span>Вспомнили пароль? <a href="#" class="SelfStorage_orange" data-bs-toggle="modal"
-                            data-bs-target="#SignModal" data-bs-dismiss="modal">Отмена</a></span>
                 </form>
             </div>
         </div>

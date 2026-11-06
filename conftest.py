@@ -10,6 +10,11 @@ from apps.storage_units.models import Box, Warehouse
 PASSWORD = "StrongPass-12345"
 
 
+@pytest.fixture
+def password():
+    return PASSWORD
+
+
 @pytest.fixture(autouse=True)
 def _tmp_media_root(settings, tmp_path):
     """QR-коды аренд пишутся во временную папку, а не в media/ проекта."""

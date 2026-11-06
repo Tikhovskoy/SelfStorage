@@ -1,0 +1,12 @@
+{% extends 'password_reset/base.html' %}
+
+{% block title %}Письмо отправлено{% endblock %}
+
+{% block content %}
+<h1 class="fw-bold SelfStorage_green mb-3">Проверьте почту</h1>
+<h4 class="SelfStorage_grey mb-3">Если аккаунт с таким e-mail существует, мы отправили на него письмо со ссылкой для
+    смены пароля.</h4>
+<p class="SelfStorage_grey mb-4">Письма нет несколько минут? Загляните в папку «Спам» или запросите ссылку ещё раз.
+</p>
+<a href="{% url 'storage_units:index' %}" class="SelfStorage_green fs_24">Вернуться на главную</a>
+{% endblock %}

@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 
 from django.contrib import messages
@@ -9,12 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
-from apps.orders.forms import (
-    LoginForm,
-    ProfileForm,
-    RegistrationForm,
-    SimplePasswordResetForm,
-)
+from apps.orders.forms import LoginForm, ProfileForm, RegistrationForm
 from apps.orders.models import Client, CostCalculationRequest
 from apps.promo.models import PromoCode
 from apps.storage_units.models import Rental
@@ -62,24 +56,10 @@ def index(request):
             "free_boxes": free_boxes,
         }
 
-    form_data = request.session.pop("reset_form_data", None)
-    form_errors_json = request.session.pop("reset_form_errors", None)
-
-    if form_data:
-        reset_form = SimplePasswordResetForm(form_data)
-        if form_errors_json:
-            form_errors = json.loads(form_errors_json)
-            for field, errors in form_errors.items():
-                for error in errors:
-                    reset_form.add_error(field, error.get("message"))
-    else:
-        reset_form = SimplePasswordResetForm()
-
     context = {
         "warehouse": warehouse_data,
         "registration_form": RegistrationForm(),
         "login_form": LoginForm(),
-        "reset_form": reset_form,
     }
 
     return render(request, "index.html", context)

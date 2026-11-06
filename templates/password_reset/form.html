@@ -1,0 +1,21 @@
+{% extends 'password_reset/base.html' %}
+
+{% block content %}
+<h1 class="fw-bold SelfStorage_green mb-3">Восстановление пароля</h1>
+<p class="SelfStorage_grey mb-4">Укажите e-mail, с которым вы регистрировались. Мы отправим на него ссылку для
+    создания нового пароля.</p>
+<form method="post" class="w-100">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="w-100 mb-4">
+        {{ form.email.errors }}
+        <input type="email" name="email" value="{{ form.email.value|default_if_none:'' }}"
+            class="form-control border-8 py-3 px-5 border-0 fs_24 SelfStorage__bg_lightgrey" placeholder="E-mail"
+            autocomplete="email" required>
+    </div>
+    <button type="submit"
+        class="btn border-8 py-3 px-5 mb-3 w-100 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange">Отправить
+        ссылку</button>
+</form>
+<a href="{% url 'storage_units:index' %}" class="SelfStorage_orange">Вернуться на главную</a>
+{% endblock %}

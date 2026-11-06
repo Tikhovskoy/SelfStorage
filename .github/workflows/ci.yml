@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    # PostgreSQL нужен, чтобы убедиться, что миграции применяются на боевой СУБД
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: selfstorage
+          POSTGRES_USER: selfuser
+          POSTGRES_PASSWORD: ci-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U selfuser -d selfstorage"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      SECRET_KEY: ci-secret-key-8f3kQ2mZ9xLw5RtYp7VnB1cHs4DgJe6AuKo0IaXbMqWz3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+
+      - name: Установка зависимостей
+        run: pip install -r requirements-dev.txt
+
+      - name: Линтер (flake8)
+        run: flake8
+
+      - name: Проверка безопасности (bandit)
+        run: bandit -q -r apps selfstorage -c .bandit
+
+      - name: Миграции соответствуют моделям
+        run: python manage.py makemigrations --check --dry-run
+
+      - name: Миграции применяются на PostgreSQL
+        env:
+          USE_SQLITE: "False"
+          POSTGRES_DB: selfstorage
+          POSTGRES_USER: selfuser
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_HOST: localhost
+        run: python manage.py migrate --noinput
+
+      - name: Боевые настройки (check --deploy)
+        env:
+          DEBUG: "False"
+          ALLOWED_HOSTS: selfstorage.example
+          USE_HTTPS: "True"
+          SECURE_HSTS_INCLUDE_SUBDOMAINS: "True"
+          SECURE_HSTS_PRELOAD: "True"
+        run: python manage.py check --deploy --fail-level WARNING
+
+      - name: Тесты и покрытие
+        run: pytest --cov --cov-report=term-missing

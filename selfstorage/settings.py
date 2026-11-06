@@ -24,10 +24,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "apps.orders",
-    "apps.customers",
     "apps.storage_units",
     "apps.promo",
-    "apps.business",
     "phonenumber_field",
     "apps.shortener",
 ]

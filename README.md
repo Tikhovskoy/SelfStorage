@@ -103,10 +103,9 @@ POSTGRES_PORT=5432
 selfstorage/
 ├── apps/                     # Приложения проекта
 │   ├── orders/               # Заказы и аренда
-│   ├── customers/            # Пользователи и профили
 │   ├── storage_units/        # Склады и боксы
 │   ├── promo/                # Промокоды и акции
-│   └── business/             # Услуги для юрлиц
+│   └── shortener/            # Короткие ссылки
 ├── docker/                   # Конфигурации Docker (backend, nginx)
 ├── selfstorage/              # Конфигурация Django (settings, urls)
 ├── templates/                # HTML-шаблоны (Bootstrap 5)

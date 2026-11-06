@@ -82,7 +82,8 @@ else:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "UserAttributeSimilarityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -133,7 +134,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
 )
 SECURE_HSTS_PRELOAD = env.bool("SECURE_HSTS_PRELOAD", default=False)
 if USE_HTTPS:
-    # nginx передаёт схему исходного запроса, по ней Django понимает, что соединение защищено
+    # nginx передаёт схему запроса, по ней Django понимает, что соединение защищено
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Почта: в разработке письма выводятся в консоль, на сервере задайте SMTP в .env

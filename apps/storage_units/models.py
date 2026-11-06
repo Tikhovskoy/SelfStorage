@@ -153,7 +153,11 @@ class Tariff(models.Model):
         ordering = ["min_square_meters", "price"]
 
     def __str__(self):
-        return f"{self.name} - {self.price} ₽/мес ({self.min_square_meters}-{self.max_square_meters if self.max_square_meters else '∞'} м²)"
+        max_square = self.max_square_meters or "∞"
+        return (
+            f"{self.name} - {self.price} ₽/мес "
+            f"({self.min_square_meters}-{max_square} м²)"
+        )
 
 
 class Rental(models.Model):

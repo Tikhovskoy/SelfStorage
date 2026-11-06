@@ -153,8 +153,12 @@ def boxes_list_view(request):
 @require_POST
 @login_required
 def renew_box(request, box_id):
-    box = get_object_or_404(Box, id=box_id)
     client = Client.objects.get(user=request.user)
+    # продлевать можно только бокс, арендованный текущим клиентом
+    rental = get_object_or_404(
+        Rental.objects.select_related("box"), box_id=box_id, client=client
+    )
+    box = rental.box
 
     renew_date = request.POST.get("renew_date")
     promo_code_text = request.POST.get("promo_code", "").strip()
@@ -183,13 +187,8 @@ def renew_box(request, box_id):
         box.is_free = False
         box.save()
 
-        rental, created = Rental.objects.get_or_create(
-            box=box, defaults={"client": client, "end_date": renew_date}
-        )
-
-        if not created:
-            rental.end_date = renew_date
-            rental.save()
+        rental.end_date = renew_date
+        rental.save()
 
         if discount > 0:
             messages.success(request, f"Аренда продлена со скидкой {discount}%.")

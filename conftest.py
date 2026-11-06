@@ -5,7 +5,7 @@ import pytest
 from django.contrib.auth.models import User
 
 from apps.orders.models import Client
-from apps.storage_units.models import Box, Warehouse
+from apps.storage_units.models import Box, Rental, Warehouse
 
 PASSWORD = "StrongPass-12345"
 
@@ -72,3 +72,19 @@ def make_box(warehouse):
 def future_date():
     """Дата окончания аренды в будущем в формате, который шлёт форма."""
     return (date.today() + timedelta(days=30)).isoformat()
+
+
+@pytest.fixture
+def make_rental(make_box):
+    """Фабрика аренд: занимает бокс клиентом и создаёт Rental."""
+
+    def factory(client, box=None, end_date=None, **box_kwargs):
+        box = box or make_box(**box_kwargs)
+        end_date = end_date or date.today() + timedelta(days=10)
+        box.tenant = client
+        box.is_free = False
+        box.paid_for = end_date
+        box.save()
+        return Rental.objects.create(client=client, box=box, end_date=end_date)
+
+    return factory

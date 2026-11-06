@@ -1,0 +1,14 @@
+{% extends 'password_reset/base.html' %}
+
+{% block title %}Пароль изменён{% endblock %}
+
+{% block content %}
+<h1 class="fw-bold SelfStorage_green mb-3">Пароль изменён</h1>
+<h4 class="SelfStorage_grey mb-4">Теперь вы можете войти с новым паролем.</h4>
+<a href="#" class="btn border-8 py-3 px-5 mb-3 text-white fs_24 SelfStorage__bg_orange SelfStorage__btn2_orange"
+    data-bs-toggle="modal" data-bs-target="#SignModal">Войти</a>
+{% endblock %}
+
+{% block modals %}
+{% include 'auth_modals.html' %}
+{% endblock %}

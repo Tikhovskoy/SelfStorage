@@ -29,20 +29,14 @@ class RegistrationForm(forms.Form):
 
     def save(self, commit=True):
         email = self.cleaned_data["email"]
-        user = User.objects.create_user(
+        # профиль клиента создаёт сигнал post_save на User
+        return User.objects.create_user(
             username=email,
             email=email,
             password=self.cleaned_data["password"],
             first_name=self.cleaned_data["first_name"],
             last_name=self.cleaned_data.get("last_name", ""),
         )
-        Client.objects.create(
-            user=user,
-            first_name=self.cleaned_data["first_name"],
-            last_name=self.cleaned_data.get("last_name", ""),
-            email=email,
-        )
-        return user
 
 
 class LoginForm(AuthenticationForm):
@@ -74,32 +68,3 @@ class ProfileForm(forms.ModelForm):
                 }
             ),
         }
-
-
-class SimplePasswordResetForm(forms.Form):
-    email = forms.EmailField(label="E-mail", max_length=254)
-    new_password = forms.CharField(label="Новый пароль", widget=forms.PasswordInput)
-    confirm_password = forms.CharField(
-        label="Подтверждение пароля", widget=forms.PasswordInput
-    )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get("new_password")
-        password2 = cleaned_data.get("confirm_password")
-
-        if password1 != password2:
-            self.add_error("confirm_password", "Пароли не совпадают")
-
-        email = cleaned_data.get("email")
-        if not User.objects.filter(username=email).exists():
-            self.add_error("email", "Пользователь с таким email не найден")
-
-        return cleaned_data
-
-    def save(self):
-        email = self.cleaned_data["email"]
-        user = User.objects.get(username=email)
-        user.set_password(self.cleaned_data["new_password"])
-        user.save()
-        return user

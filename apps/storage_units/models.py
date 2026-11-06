@@ -10,12 +10,12 @@ from .qr_utils import generate_qr_code_image
 
 
 class Warehouse(models.Model):
-    ADVANTAGE_CHOICE = {
+    ADVANTAGE_CHOICE = [
         ("metro", "Рядом с метро"),
         ("parking", "Парковка"),
         ("ceilings", "Высокие потолки"),
         ("box", "Большие боксы"),
-    }
+    ]
 
     name = models.CharField(max_length=100, verbose_name="Название склада")
     address = models.TextField(verbose_name="Адрес")
@@ -153,7 +153,11 @@ class Tariff(models.Model):
         ordering = ["min_square_meters", "price"]
 
     def __str__(self):
-        return f"{self.name} - {self.price} ₽/мес ({self.min_square_meters}-{self.max_square_meters if self.max_square_meters else '∞'} м²)"
+        max_square = self.max_square_meters or "∞"
+        return (
+            f"{self.name} - {self.price} ₽/мес "
+            f"({self.min_square_meters}-{max_square} м²)"
+        )
 
 
 class Rental(models.Model):
@@ -161,6 +165,17 @@ class Rental(models.Model):
     box = models.OneToOneField(Box, on_delete=models.CASCADE, verbose_name="Бокс")
     start_date = models.DateField(auto_now_add=True)
     end_date = models.DateField()
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Итоговая цена",
+        help_text="Цена бокса с учётом скидки по промокоду на момент аренды",
+    )
+    discount_percent = models.PositiveSmallIntegerField(
+        default=0, verbose_name="Скидка (%)"
+    )
 
     qr_token = models.CharField(max_length=64, unique=True, blank=True)
     qr_code = models.ImageField(upload_to="qr_codes/", blank=True, null=True)

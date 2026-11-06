@@ -4,12 +4,10 @@ __pycache__/
 *.log
 *.env
 .env.*
+!.env.example
 media/
 staticfiles/
 venv/
 .idea/
 .vscode/
 reference
-**/migrations/*.py
-**/migrations/*.pyc
-!**/migrations/__init__.py

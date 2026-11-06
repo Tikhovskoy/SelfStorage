@@ -4,6 +4,7 @@ exclude_dirs:
   - media
   - static
   - migrations
+  - tests
   - __pycache__
   - .git
 

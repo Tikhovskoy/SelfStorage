@@ -7,6 +7,7 @@ from apps.shortener.views import short_redirect
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include("apps.orders.urls")),
     path("", include("apps.storage_units.urls")),
     path("s/<str:token>/", short_redirect, name="short_redirect"),
 ]

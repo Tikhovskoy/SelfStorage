@@ -3,10 +3,8 @@ version: "3.9"
 services:
   db:
     image: postgres:14
-    environment:
-      POSTGRES_DB: selfstorage
-      POSTGRES_USER: selfuser
-      POSTGRES_PASSWORD: selfpass
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

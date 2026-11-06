@@ -3,6 +3,7 @@ from pathlib import Path
 
 import environ
 
+STRONG_SECRET_KEY = "dj-test-8f3kQ2mZ9xLw5RtYp7VnB1cHs4DgJe6AuKo0IaXbMqWz3TyNr2"
 SETTINGS_FILE = Path(__file__).resolve().parent.parent / "settings.py"
 
 
@@ -16,7 +17,7 @@ def load_settings(monkeypatch, **env_vars):
     monkeypatch.setattr(environ.Env, "read_env", classmethod(lambda cls, *a, **k: None))
     for name in ("DEBUG", "USE_SQLITE"):
         monkeypatch.delenv(name, raising=False)
-    monkeypatch.setenv("SECRET_KEY", "x" * 60)
+    monkeypatch.setenv("SECRET_KEY", STRONG_SECRET_KEY)
     for name, value in env_vars.items():
         monkeypatch.setenv(name, value)
 

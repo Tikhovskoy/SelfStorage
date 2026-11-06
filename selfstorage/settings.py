@@ -118,6 +118,24 @@ LOGIN_URL = "/login/"
 
 SELFSTORAGE_DOMAIN = env("SELFSTORAGE_DOMAIN", default="127.0.0.1:8000")
 
+# HTTPS: включайте USE_HTTPS=True, когда сайт открывается по https (TLS на nginx).
+# По обычному http флаг должен оставаться выключенным, иначе вход перестанет работать.
+USE_HTTPS = env.bool("USE_HTTPS", default=False)
+
+SECURE_SSL_REDIRECT = USE_HTTPS
+SESSION_COOKIE_SECURE = USE_HTTPS
+CSRF_COOKIE_SECURE = USE_HTTPS
+SECURE_HSTS_SECONDS = env.int(
+    "SECURE_HSTS_SECONDS", default=31536000 if USE_HTTPS else 0
+)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
+    "SECURE_HSTS_INCLUDE_SUBDOMAINS", default=False
+)
+SECURE_HSTS_PRELOAD = env.bool("SECURE_HSTS_PRELOAD", default=False)
+if USE_HTTPS:
+    # nginx передаёт схему исходного запроса, по ней Django понимает, что соединение защищено
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Почта: в разработке письма выводятся в консоль, на сервере задайте SMTP в .env
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"

@@ -21,14 +21,15 @@ class Command(BaseCommand):
             "box10": [5, 4, 2.2, 8901],
         }
 
+        # команда создаёт демонстрационные боксы, криптостойкий генератор не нужен
         for warehouse in warehouses:
-            for obj in range(random.randint(130, 390)):
-                box = random.choice(list(list_boxes.values()))
+            for obj in range(random.randint(130, 390)):  # nosec B311
+                box = random.choice(list(list_boxes.values()))  # nosec B311
                 length, width, height, price = box
 
                 Box.objects.create(
                     warehouse=warehouse,
-                    floor=random.randint(1, 3),
+                    floor=random.randint(1, 3),  # nosec B311
                     length=length,
                     width=width,
                     height=height,

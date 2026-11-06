@@ -9,7 +9,8 @@ from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
 from apps.orders.forms import LoginForm, ProfileForm, RegistrationForm
-from apps.orders.models import Client, CostCalculationRequest
+from apps.orders.models import CostCalculationRequest
+from apps.orders.services import ensure_client
 from apps.promo.models import PromoCode
 from apps.storage_units.models import Rental
 
@@ -75,7 +76,7 @@ def faq(request):
 
 @login_required
 def my_rent(request):
-    client = get_object_or_404(Client, user=request.user)
+    client = ensure_client(request.user)
     user = request.user
 
     if request.method == "POST":
@@ -153,7 +154,7 @@ def boxes_list_view(request):
 @require_POST
 @login_required
 def renew_box(request, box_id):
-    client = Client.objects.get(user=request.user)
+    client = ensure_client(request.user)
     # продлевать можно только бокс, арендованный текущим клиентом
     rental = get_object_or_404(
         Rental.objects.select_related("box"), box_id=box_id, client=client
@@ -202,7 +203,7 @@ def renew_box(request, box_id):
 @login_required
 def rent_box(request, box_id):
     box = get_object_or_404(Box, id=box_id)
-    client = Client.objects.get(user=request.user)
+    client = ensure_client(request.user)
 
     if box.tenant is None:
         rent_until = request.POST.get("rent_until")

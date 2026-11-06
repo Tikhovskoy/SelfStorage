@@ -29,20 +29,14 @@ class RegistrationForm(forms.Form):
 
     def save(self, commit=True):
         email = self.cleaned_data["email"]
-        user = User.objects.create_user(
+        # профиль клиента создаёт сигнал post_save на User
+        return User.objects.create_user(
             username=email,
             email=email,
             password=self.cleaned_data["password"],
             first_name=self.cleaned_data["first_name"],
             last_name=self.cleaned_data.get("last_name", ""),
         )
-        Client.objects.create(
-            user=user,
-            first_name=self.cleaned_data["first_name"],
-            last_name=self.cleaned_data.get("last_name", ""),
-            email=email,
-        )
-        return user
 
 
 class LoginForm(AuthenticationForm):
